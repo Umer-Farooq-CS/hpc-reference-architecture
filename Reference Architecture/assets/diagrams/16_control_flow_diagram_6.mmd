@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant User as End User
+    participant KS as KServe Controller
+    participant CSI as Storage CSI (MinIO)
+    participant VLLM as vLLM Predictor Pod
+    participant Prom as Prometheus
+    participant HPA as K8s HPA
+
+    User->>KS: Deploy InferenceService (Llama-3-70B)
+    KS->>CP: Spin up Predictor Pod
+    CP->>CSI: Request Model Weights
+    CSI-->>VLLM: Stream 140GB weights from Cold Storage
+    VLLM->>VLLM: Load weights into GPU VRAM (PagedAttention)
+    VLLM-->>KS: Ready
+    User->>VLLM: API Request (OpenAI schema)
+    VLLM-->>User: Streaming response
+    Prom->>VLLM: Scrape metrics (Concurrent Requests > Threshold)
+    Prom->>HPA: Trigger Scale Up
+    HPA->>KS: Replicas = 2
+    Note over KS, VLLM: New Pod spun up on second GPU

@@ -1,0 +1,7 @@
+\chapter{Executive Summary}
+
+This document presents the comprehensive reference architecture for a state-of-the-art High-Performance Computing (HPC) and GPU Cloud Platform proposed by MAK Technology. Designed to meet the rigorous demands of modern artificial intelligence, machine learning, and high-performance computing workloads, this architecture provides a scalable, resilient, and multi-tenant environment.
+
+The foundational design caters to an initial baseline sizing of 64 NVIDIA H100 GPUs, 1 PB of tiered storage, and an infrastructure capable of supporting up to 110 distinct tenants concurrently. The platform is constructed upon a 7-layer architecture, abstracting complexity from the physical hardware up through the networking, storage, cloud-native bare-metal provisioning (via Metal3, OpenStack Ironic, and Cluster API), Kubernetes orchestration, ML platform services, and finally, the tenant-facing service layer.
+
+By leveraging enterprise-grade components such as Dell PowerEdge compute nodes, NVIDIA Quantum-2 InfiniBand networking, and SONiC OS Ethernet switches, alongside a robust open-source and CNCF-certified software stack (Metal3, RKE2, KubeFlow, vLLM, MLflow), MAK Technology delivers an end-to-end cloud platform. This platform provides users with seamless Jupyter Notebooks as a Service (JNaaS), Model as a Service (ModelaaS), and a robust MLOps pipeline, ensuring maximum hardware utilization via advanced MIG slicing and KAI gang scheduling.

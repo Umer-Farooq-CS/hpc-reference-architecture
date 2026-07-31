@@ -1,0 +1,61 @@
+\documentclass[11pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{caption}
+
+% Styling
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={HPC and GPU Cloud Platform Architecture Proposal},
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{MAK Technology}
+\fancyhead[R]{Reference Architecture Proposal}
+\fancyfoot[C]{\thepage}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\Huge}
+  {\chaptertitlename\ \thechapter}
+  {20pt}
+  {\Huge}
+
+\title{
+    \vspace{2cm}
+    \Huge \textbf{HPC / GPU Cloud Platform} \\
+    \vspace{0.5cm}
+    \Large \textbf{Reference Architecture Proposal} \\
+    \vspace{1.5cm}
+}
+\author{\Large MAK Technology}
+\date{\vspace{1cm}\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\input{01_executive_summary}
+\input{02_hardware_architecture}
+\input{03_network_architecture}
+\input{04_storage_architecture}
+\input{05_kubernetes_platform}
+\input{06_mlops_and_scheduling}
+\input{07_tenant_models}
+
+\end{document}

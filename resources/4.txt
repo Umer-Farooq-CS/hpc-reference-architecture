@@ -1,0 +1,23 @@
+Here is the structured breakdown based on the latest notes provided.
+
+### **Requests for Proposals (RFPs) & Hardware Sizing**
+
+* When evaluating RFPs, a core task is determining hardware sizing and resource division.
+* An example scenario involves evaluating if the hardware is sufficient for 110 tenants utilizing 64 GPUs and 1 PB of total storage.
+* A key operational consideration is that clients might not provide explicit requirements for how to divide these resources.
+* The architect must determine if the hardware is enough and define the strategy for how to divide it.
+
+### **Storage Architecture Breakdown**
+
+Large-scale storage allocations (such as the 1 PB example) are divided into specific functional tiers:
+
+* **Hot Storage:** Specifically allocated for RAG Vector data.
+* **Cold Storage:** Used for Object Knowledge Bases, utilizing S3 or NFS.
+* **Block Storage:** Dedicated to infrastructure components, including VMs, Kubernetes (K8s), Pods, and ETCD.
+
+### **Reference Architecture (RA)**
+
+* The team is responsible for providing the Reference Architecture (RA) for the proposed solutions.
+* This architecture incorporates RDMA and aligns with Nvidia Architecture ("Nvidia Arch").
+* All designs must be executed "According to Standards".
+* **Rafay Integration Structure:** The control plane consists of a "Rafay Controller" that interfaces downwards to "Rafay Agents". These agents are deployed directly onto the "Bare Metal / Cloud" infrastructure layer.

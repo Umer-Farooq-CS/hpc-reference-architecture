@@ -1,0 +1,92 @@
+/* Make mermaid SVG objects pretty and clean */
+.mermaid-svg {
+    width: 100%;
+    border: 1px solid var(--md-default-fg-color--lightest);
+    border-radius: 8px;
+    box-shadow: var(--md-shadow-z1);
+    background-color: transparent !important;
+    margin: 2em 0;
+    display: block;
+}
+
+/* Allow the tall diagrams to be slightly wider, but not break the sidebars (e.g. 105%) */
+@media screen and (min-width: 1220px) {
+    .mermaid-svg-tall {
+        width: 106%;
+        margin-left: -3%;
+    }
+}
+
+/* Fullscreen capabilities */
+.mermaid-wrapper.fullscreen-mode {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    background-color: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(5px);
+    margin: 0 !important;
+    padding: 2rem !important;
+    box-sizing: border-box !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mermaid-wrapper.fullscreen-mode .mermaid-svg,
+.mermaid-wrapper.fullscreen-mode .mermaid-svg-tall {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 1600px !important;
+    margin: 0 !important;
+    border: 1px solid var(--md-default-fg-color--lightest) !important;
+    border-radius: 12px !important;
+    background-color: var(--md-default-bg-color) !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5) !important;
+}
+
+.mermaid-fs-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    z-index: 10;
+    padding: 6px 12px;
+    background: var(--md-primary-fg-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    box-shadow: var(--md-shadow-z2);
+}
+
+.mermaid-wrapper.fullscreen-mode .mermaid-fs-btn {
+    top: 2rem;
+    right: 3rem;
+    padding: 8px 16px;
+    opacity: 0.9;
+}
+
+.mermaid-wrapper:hover .mermaid-fs-btn {
+    opacity: 0.8;
+}
+
+.mermaid-fs-btn:hover {
+    opacity: 1 !important;
+}
+
+/* Make tables look a bit cleaner */
+.md-typeset table:not([class]) {
+    box-shadow: var(--md-shadow-z1);
+    border-radius: 4px;
+}
+
+/* Custom fonts for prettiness */
+:root {
+  --md-text-font: "Inter", sans-serif;
+  --md-code-font: "JetBrains Mono", monospace;
+}

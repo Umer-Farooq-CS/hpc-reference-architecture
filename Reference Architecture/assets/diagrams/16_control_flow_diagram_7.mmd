@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant PT as PyTorchJob
+    participant Kube as Kubelet
+    participant CSI as WEKA CSI Driver
+    participant Eth as SONiC 100GbE Switch
+    participant NVMe as WEKA Storage Appliance
+
+    PT->>Kube: Pod scheduled, requires 50TB dataset
+    Kube->>CSI: NodePublishVolume request
+    CSI->>NVMe: API Call: Create/Expose Volume
+    NVMe-->>CSI: Volume Ready
+    CSI->>Kube: Mount volume locally (RoCEv2 backend)
+    Kube->>PT: Start Container with mounted hostPath
+    PT->>NVMe: Read Training Data (Batch 1)
+    Note over PT, NVMe: Traffic flows directly over 100GbE bypassing CPU bottleneck
+    NVMe-->>Eth: 100GbE RoCEv2 packets
+    Eth-->>PT: Data loaded into RAM/VRAM

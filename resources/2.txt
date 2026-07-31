@@ -1,0 +1,31 @@
+Here is the structured breakdown of the information from the new images provided, organized into logical architectural components:
+
+### **Hardware & GPU Virtualization**
+
+* The hardware layer utilizes specific node identifiers (e.g., "B1-G1-A") to map resources, where "B" indicates Bare Metal, "G" indicates the GPU number, and "A" indicates the specific Slice.
+* Large Language Models (LLMs) are hosted and executed directly on this hardware layer.
+* For NVIDIA infrastructure, GPU sharing and slicing are achieved through techniques including Time Slicing, MIG (Multi-Instance GPU), and vGPUs.
+* NIM is also noted as a component within this ecosystem.
+
+### **Orchestration Layer & Scheduling**
+
+* The central Orchestration layer directly manages and provisions resources to the underlying Hardware layer.
+* At the workload level, the orchestrator manages resources via "PoDs," allocating specific amounts of vCPU, RAM, and GPU through a Scheduler.
+* Kubeflow is explicitly identified as an open-source tool utilized as an orchestrator.
+* The underlying scheduling and orchestration stack relies on CUDA, Kubernetes (K8s), NUOP8R, and the KAI Scheduler.
+* The KAI Scheduler is strategically designated to replace Run.ai.
+
+### **Service Models**
+
+* The orchestration layer is designed to support and feed into higher-level service offerings, which include:
+* JNaaS (Jupyter Notebook as a Service)
+* ModelaaS (Model as a Service)
+* MLOps
+* GPU PaaS (Platform as a Service)
+
+
+
+### **Bare Metal Provisioning & Visibility**
+
+* To achieve "LLM Visibility" and handle Bare Metal Provisioning, a specific suite of tools is utilized.
+* This provisioning stack includes Slinky, Metal3, VMetal, and BCM.

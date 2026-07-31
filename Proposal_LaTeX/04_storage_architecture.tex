@@ -1,0 +1,29 @@
+\chapter{Storage Architecture}
+
+To prevent I/O bottlenecks during distributed training and data loading, the platform utilizes a sophisticated 4-Tier storage architecture, totaling 1 PB in capacity.
+
+\section{Tier 1: Local NVMe Scratch}
+Each GPU node contains 4x 3.84 TB NVMe SSDs (Tier 1B) providing localized scratch space. Furthermore, the 5x Control Plane nodes feature 2x 1.92 TB NVMe SSDs in RAID-1 (Tier 1A) exclusively for the \texttt{etcd} database. This isolation prevents large ML datasets from degrading Kubernetes control plane stability.
+
+\section{Tier 2: Hot Storage (WEKA)}
+Designed to feed data-hungry GPUs during active training runs without bottlenecking on I/O.
+\begin{itemize}
+    \item \textbf{Platform:} \textbf{WEKA Data Platform}.
+    \item \textbf{Capacity \& Performance:} 200 TB NVMe, delivering over 10M+ IOPS.
+    \item \textbf{Networking:} Connected via RoCEv2 RDMA over the 100GbE Ethernet plane for near-local disk speeds.
+\end{itemize}
+
+\section{Tier 3: Cold Storage (MinIO)}
+Serving as the primary data lake, model registry artifact store, and general object storage.
+\begin{itemize}
+    \item \textbf{Platform:} \textbf{MinIO Enterprise}.
+    \item \textbf{Capacity \& Hardware:} 600 TB across 4 HDD-based storage servers.
+    \item \textbf{Features:} Erasure coded for high durability, S3-compatible, natively integrated with MLflow and KubeFlow.
+\end{itemize}
+
+\section{Tier 4: Block Storage (Ceph)}
+Standard persistent block storage for Kubernetes workloads (e.g., databases, Jupyter workspaces).
+\begin{itemize}
+    \item \textbf{Platform:} \textbf{Ceph RBD}, managed natively in Kubernetes via the \textbf{Rook Operator}.
+    \item \textbf{Capacity \& Hardware:} 200 TB across 3 SSD OSD storage nodes, capable of 100K+ IOPS.
+\end{itemize}

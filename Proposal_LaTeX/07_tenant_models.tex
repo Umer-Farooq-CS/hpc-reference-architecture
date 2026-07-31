@@ -1,0 +1,31 @@
+\chapter{Tenant Models and Isolation}
+
+To effectively serve up to 110 distinct tenants varying from solo researchers to production MLOps teams, the architecture utilizes a 3-Tier Tenant Model. GPU virtualization is achieved via a 75/25 Hybrid strategy utilizing NVIDIA Multi-Instance GPU (MIG) slicing, allowing maximum hardware utilization without sacrificing isolation.
+
+\section{Tier 1: Shared Clusters}
+Serving approximately 80\% of tenants.
+\begin{itemize}
+    \item \textbf{Isolation:} Kubernetes Namespace isolation bounded by strict NetworkPolicies and ResourceQuotas.
+    \item \textbf{Resource Cap:} Maximum of 4 MIG slices and 500 GB storage per tenant (base quota).
+    \item \textbf{Queue Policy:} Guaranteed 2 GPUs (MIG slices) with burst capabilities up to 4 if the cluster is under-utilized.
+\end{itemize}
+
+\section{Tier 2: vCluster (Virtual Kubernetes)}
+Serving approximately 15\% of tenants who require deeper Kubernetes integration.
+\begin{itemize}
+    \item \textbf{Technology:} Virtual Kubernetes clusters providing dedicated API servers and control planes to the tenant, while workloads map down to the physical worker nodes via a syncer component.
+    \item \textbf{Benefits:} Tenants can install custom CRDs, Operators, and configure cluster-wide RBAC without affecting the physical host cluster.
+    \item \textbf{Queue Policy:} Guaranteed 8 GPUs (via VRL) with the ability to burst up to a \textbf{Resource Cap} of 16 GPUs and 2 TB storage (base quota).
+    \item \textbf{VRL (Virtual Resource Layer):} The vCluster syncer maps virtual requests into physical ResourceQuotas tied to a specific KAI Scheduler queue.
+\end{itemize}
+
+\section{Tier 3: Dedicated Node Allocation}
+Serving approximately 5\% of tenants running massive, monolithic training runs (e.g., 70B+ parameter models).
+\begin{itemize}
+    \item \textbf{Isolation:} Physical isolation via Kubernetes Taints and Tolerations. Tenants are allocated full \texttt{7g.80gb} un-sliced GPUs from the shared cluster.
+    \item \textbf{Resource Cap:} Allocated in full node increments (e.g., 1 to 2 nodes yielding 8 to 16 dedicated GPUs).
+    \item \textbf{Access:} Namespace-admin access with dedicated InfiniBand bandwidth, eliminating the noisy-neighbor problem completely without requiring a separate control plane.
+\end{itemize}
+
+\section{Storage Allocation Strategy}
+Base quotas for Tier 1 and Tier 2 are set conservatively (500 GB and 2 TB). However, the massive 1 PB cluster capacity allows for dynamic expansion of these quotas upon request. The vast majority of the 1 PB is intentionally reserved for central, platform-managed Foundation Models, shared datasets, and vector databases that all tenants can access without duplicating storage.

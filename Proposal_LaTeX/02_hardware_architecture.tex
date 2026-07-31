@@ -1,0 +1,44 @@
+\chapter{Hardware Architecture}
+
+\section{Compute Servers}
+The compute layer is built on cutting-edge hardware designed for maximum deep learning throughput. The core component is the \textbf{Dell PowerEdge XE9680} server. The initial deployment consists of 8 such servers, yielding a total of 64 GPUs.
+
+\subsection{Server Specifications}
+\begin{itemize}
+    \item \textbf{GPU:} 8x NVIDIA H100 SXM5 80GB per server.
+    \item \textbf{Interconnect:} NVIDIA NVLink interconnecting all 8 GPUs within the chassis for ultra-high-bandwidth intra-node communication.
+    \item \textbf{CPU:} Dual Intel Xeon Platinum 8480+ (56 cores/socket) or AMD EPYC 9654.
+    \item \textbf{Memory:} 1.5 TB DDR5 ECC RAM.
+    \item \textbf{Local Storage (Tier 1B):} 4x 3.84 TB NVMe SSDs configured for local scratch space to handle ultra-fast temporary data during training.
+\end{itemize}
+
+\subsection{Network Interface Configuration (NIC)}
+Each compute node features a highly dense, 12-connection NIC blueprint to ensure complete isolation across different traffic planes:
+\begin{itemize}
+    \item \textbf{8x InfiniBand 400G NDR Ports:} Dedicated for East-West GPU-to-GPU training traffic.
+    \item \textbf{2x 100GbE Ethernet Ports:} Dedicated for RoCEv2 storage access and Kubernetes control plane traffic.
+    \item \textbf{2x 1GbE BMC Ports:} Dedicated for Out-of-Band (OOB) hardware management and PXE boot capabilities.
+\end{itemize}
+
+\section{Control Plane Servers}
+The Kubernetes control plane requires dedicated hardware to ensure cluster stability. We provision \textbf{5x 1U Master Nodes}.
+\begin{itemize}
+    \item \textbf{CPU/Memory:} Dual-Socket CPU, 256 GB DDR5.
+    \item \textbf{Storage:} 2x 1.92 TB NVMe in RAID-1 configuration, ensuring sub-millisecond fsync latencies critical for \texttt{etcd}.
+    \item \textbf{Networking:} Dual-homed 100GbE for highly available control plane access.
+\end{itemize}
+
+\section{Physical Rack Layout}
+The physical infrastructure is distributed across three racks, managing power density and thermal constraints effectively:
+\begin{itemize}
+    \item \textbf{Compute Rack A \& B:} Each houses 4x Dell XE9680 servers, consuming approximately 40.8 kW per rack.
+    \item \textbf{Storage \& Control Rack C:} Houses the network switches (top-of-rack), 5x Control Plane servers, and all storage appliances (WEKA, MinIO, Ceph).
+\end{itemize}
+
+% Placeholder for Hardware Diagram
+\begin{figure}[htbp]
+    \centering
+    \fbox{\parbox[c][5cm][c]{0.8\textwidth}{\centering \textit{Placeholder: Hardware Diagram (Mermaid Render)}}}
+    \caption{Detailed Hardware and Cabling Topology}
+    \label{fig:hardware_diagram}
+\end{figure}

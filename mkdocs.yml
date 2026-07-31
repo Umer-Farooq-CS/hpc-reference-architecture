@@ -1,0 +1,75 @@
+site_name: HPC / GPU Cloud Platform Architecture
+site_description: Reference Architecture for MAK Technology
+docs_dir: Reference Architecture
+
+theme:
+  name: material
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - toc:
+      toc_depth: 2
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed
+  - pymdownx.highlight:
+      anchor_linenums: true
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js
+  - assets/javascripts/mermaid-zoom.js
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Introduction:
+    - 1. RFP Requirements: 01_rfp_requirements.md
+    - 2. Executive Summary: 02_summary.md
+  - Architecture Detail:
+    - 3. Compute Servers: 03_compute_servers.md
+    - 4. NIC Interfaces: 04_nic_interfaces.md
+    - 5. Network Switching: 05_network_switching.md
+    - 6. Network Software: 06_network_software.md
+    - 7. MIG GPU Slicing: 07_mig_gpu_slicing.md
+    - 8. Storage Tiers: 08_storage_tiers.md
+    - 9. Bare Metal Provisioning: 09_bare_metal_provisioning.md
+    - 10. Control Plane: 10_control_plane.md
+    - 11. Kubernetes: 11_kubernetes.md
+    - 12. KubeFlow & KAI: 12_kubeflow_kai.md
+    - 13. Rafay Management: 13_rafay.md
+  - Tenant Configuration:
+    - 17. Tenant Models: 17_tenant_models.md
+    - 18. Service Layer: 18_service_layer.md
+  - Full Diagrams:
+    - 14. Hardware Diagram: 14_hardware_diagram.md
+    - 15. Software Diagram: 15_software_diagram.md
+    - 16. Control Flow Diagram: 16_control_flow_diagram.md

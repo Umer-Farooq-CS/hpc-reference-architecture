@@ -1,0 +1,34 @@
+\chapter{MLOps and GPU Scheduling}
+
+\section{MLOps Platform Services}
+The platform standardizes on open-source, industry-leading tools to provide a seamless machine learning lifecycle.
+\begin{itemize}
+    \item \textbf{KubeFlow Notebooks (JNaaS):} Provides Jupyter Notebook as a Service, granting users isolated, GPU-backed development environments.
+    \item \textbf{KubeFlow Pipelines \& Training Operator:} Automates the training lifecycle and supports distributed training frameworks (PyTorchJob, TFJob).
+    \item \textbf{MLflow:} Serves as the central Model Registry and Experiment Tracking system, utilizing MinIO for artifact storage.
+    \item \textbf{Slinky (SLURM on Kubernetes):} Acts as a compatibility layer for traditional HPC tenants. Slinky intercepts legacy \texttt{sbatch} job submissions and translates them natively into Kubernetes Pods, eliminating the need for a legacy standalone SLURM controller.
+    \item \textbf{KServe with vLLM (ModelaaS):} Used for deploying Large Language Models (LLMs) via an OpenAI-compatible API. \textbf{vLLM} was selected as the backend for its superior PagedAttention memory management and continuous batching capabilities.
+\end{itemize}
+
+\section{GPU Scheduling}
+Efficient allocation of the 64 H100 GPUs is critical. The platform employs the \textbf{KAI Scheduler} (or equivalent advanced scheduler like Run:ai) to replace the default Kubernetes scheduler.
+\begin{itemize}
+    \item \textbf{Gang Scheduling:} Ensures all pods in a distributed training job are scheduled simultaneously to prevent resource deadlocks.
+    \item \textbf{Topology Awareness:} Ensures jobs are scheduled on GPUs physically close to each other (e.g., within the same NVLink domain or same switch).
+    \item \textbf{Priority Queues:} Enforces guaranteed quotas and burst limits across different tenant queues.
+\end{itemize}
+
+\section{Operations and Observability}
+\begin{itemize}
+    \item \textbf{Rafay Systems:} A SaaS management controller providing multi-cluster management and a Self-Service Portal (SSP) for tenants.
+    \item \textbf{ArgoCD:} Drives GitOps workflows, ensuring all platform blueprints (GPU Operator, CSI drivers, monitoring stack) are declaratively maintained and automatically reconciled.
+    \item \textbf{Prometheus \& Grafana:} Provide deep observability into cluster health, integrating with NVIDIA DCGM for granular GPU metric scraping.
+\end{itemize}
+
+% Placeholder for Software Diagram
+\begin{figure}[htbp]
+    \centering
+    \fbox{\parbox[c][5cm][c]{0.8\textwidth}{\centering \textit{Placeholder: Software Layer Diagram (Mermaid Render)}}}
+    \caption{7-Layer Software Architecture Diagram}
+    \label{fig:software_diagram}
+\end{figure}

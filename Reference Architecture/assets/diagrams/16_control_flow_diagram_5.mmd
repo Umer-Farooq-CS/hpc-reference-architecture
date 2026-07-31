@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant KF as KubeFlow (Tenant)
+    participant KAI as KAI Scheduler
+    participant GO as GPU Operator
+    participant MP as mig-parted Daemon
+    participant GPU as H100 Physical GPU
+
+    KF->>KAI: Request Notebook (1x 1g.10gb MIG Slice)
+    KAI->>KAI: Check available 1g.10gb slices in Pool 3
+    alt No slices available
+        KAI->>GO: Request Dynamic Reconfiguration
+        GO->>MP: Drain 1 Idle GPU & Re-partition
+        MP->>GPU: Tear down existing slices
+        GPU-->>MP: Clean state
+        MP->>GPU: Apply profile: 7x 1g.10gb
+        GPU-->>GO: 7 new slices ready
+        GO-->>KAI: Capacity added
+    end
+    KAI->>CP: Schedule Pod to Node
+    CP->>GPU: Mount 1g.10gb slice into Pod
+    Note over KF, GPU: Notebook running on isolated hardware slice

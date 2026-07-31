@@ -1,0 +1,30 @@
+Here is the structured breakdown of the architecture stack and tenant request models based on the new notes.
+
+### **System Architecture Stack**
+
+The architecture is structured in a bottom-up hierarchy:
+
+* **Base Layer (Infrastructure):** Built on "Bare Metal" servers, specifically utilizing hardware from Lenovo, HP, and Dell.
+* **Network Layer:** The "Network Hardware" sits above the bare metal and interfaces with "SONIC (EDA)" and "LINUX".
+* **Orchestration Layer:** This layer is composed of Kubernetes ("K8s"), Kubeflow ("KFlow"), and the "KAI Sched" (Scheduler).
+* **Service Layer:** Provides "SSP / JNPaas".
+* **Top Layer (Management):** The "Management layer" handles "RBAC" (Role-Based Access Control).
+* **Platform Provider:** The entire stack—from the network and hardware layers all the way up through the management layer—is managed by a single entity, noted as "Rafay Provides All" and "All Done by Rafay".
+
+### **Tenant Request Models**
+
+The system accommodates "3 Types of Tenant Requests":
+
+* **Normal Shared Provisioning Clusters:**
+* A streamlined, shared resource model.
+* Operational flow: "You ask to run, it runs".
+
+
+* **vClusters:**
+* A virtualized cluster model where "You ask for cluster" and are provisioned a dedicated virtual environment.
+* The provided environment stack includes: "K8s", "Crd NOP8s", "Kflow", "EDA", and "VRL".
+
+
+* **(Hard) Bare Metal Clusters:**
+* A dedicated, isolated infrastructure model where the user receives physical, bare metal nodes.
+* Operational flow: "You get this" (referencing the fully isolated physical cluster).

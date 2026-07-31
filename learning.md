@@ -1,0 +1,155 @@
+# Project Abbreviations and Definitions
+
+This document contains a comprehensive list of abbreviations used throughout the architecture and decision documents, along with their full forms and a one-line explanation of their usage within the context of this project.
+
+- **A100**: NVIDIA A100 GPU - The predecessor to the H100 GPU, used for AI workloads.
+- **AI**: Artificial Intelligence - The overarching field of the machine learning workloads running on the cluster.
+- **AKS**: Azure Kubernetes Service - Mentioned as a cloud Kubernetes service option.
+- **API**: Application Programming Interface - Interfaces used by software components (e.g., Rafay, Kubeflow) to interact with each other and the infrastructure.
+- **ARP**: Address Resolution Protocol - Network protocol used for mapping IP addresses to MAC addresses.
+- **ASIC**: Application-Specific Integrated Circuit - Specialized networking hardware chips used inside the SONiC ethernet switches.
+- **AWS**: Amazon Web Services - Cloud provider mentioned as a comparison for cloud-native setups.
+- **BCM**: Bright Cluster Manager - A commercial HPC bare-metal cluster management tool by NVIDIA, considered as a provisioning alternative.
+- **BGP**: Border Gateway Protocol - Routing protocol used in the network infrastructure (e.g., BGP EVPN for scalable routing).
+- **BMC**: Baseboard Management Controller - Specialized microcontroller on servers used for Out-of-Band (OOB) hardware management.
+- **CAPI**: Cluster API - Kubernetes standard used for provisioning, upgrading, and managing multiple Kubernetes clusters.
+- **CAPEX**: Capital Expenditure - The initial cost incurred to purchase the physical data center hardware.
+- **CD**: Continuous Deployment - Automated deployment practices used for rolling out updates.
+- **CEPH**: Ceph Storage - An open-source distributed storage system used for the cold/warm storage tiers.
+- **CI**: Continuous Integration - Automated code integration practices used by developer tenants.
+- **CIS**: Container Ingress Services - Mentioned in the context of F5 load balancing for Kubernetes ingress.
+- **CLI**: Command Line Interface - Text-based user interfaces used for operating systems and tools.
+- **CNCF**: Cloud Native Computing Foundation - The open-source organization that hosts Kubernetes and related cloud-native projects.
+- **CNI**: Container Network Interface - The Kubernetes standard for networking plugins (e.g., Cilium or Calico).
+- **CP**: Control Plane - The management node layer orchestrating the Kubernetes cluster or networking fabric.
+- **CPU**: Central Processing Unit - The main host processor in the compute and storage nodes (e.g., AMD EPYC).
+- **CRD**: Custom Resource Definition - A Kubernetes mechanism used to extend the API with custom resources (like KubeFlow Notebooks or tenant-defined NOPs).
+- **CSI**: Container Storage Interface - Standard API for storage provisioning in Kubernetes, used to integrate WEKA and Ceph.
+- **CUDA**: Compute Unified Device Architecture - NVIDIA's parallel computing platform and programming model used by ML workloads.
+- **DAC**: Direct Attach Copper - Type of twinax network cable used for short-distance switch-to-server connections.
+- **DB**: Database - Systems for storing structured data for the control plane or workloads.
+- **DC**: Data Center - The physical location housing the compute cluster hardware.
+- **DCGM**: Data Center GPU Manager - NVIDIA's suite of tools for managing, monitoring, and profiling GPUs in the cluster.
+- **DDR5**: Double Data Rate 5 - The latest standard for fast system memory used in the compute nodes.
+- **DDN**: DataDirect Networks - A high-performance storage vendor considered for the storage tiers.
+- **DGX**: NVIDIA DGX - NVIDIA's line of purpose-built, high-performance AI servers.
+- **DHCP**: Dynamic Host Configuration Protocol - Used to assign IP addresses automatically to nodes and switches during provisioning.
+- **DMA**: Direct Memory Access - Technology allowing hardware subsystems to access main system memory independently of the CPU.
+- **DVC**: Data Version Control - An MLOps tool used for dataset versioning by tenants.
+- **ECC**: Error Correction Code - A memory feature for detecting and correcting data corruption, essential for stable cluster operations.
+- **ECMP**: Equal-Cost Multi-Path - A routing strategy used in Leaf-Spine topologies to distribute traffic evenly across multiple network paths.
+- **ECN**: Explicit Congestion Notification - A network protocol used alongside PFC to manage congestion in lossless Ethernet networks.
+- **EDA**: Event-Driven Automation - A network automation platform (like Nokia EDA) used to manage and configure switches based on events.
+- **EKS**: Elastic Kubernetes Service - Amazon's cloud Kubernetes service, mentioned as a target for multi-cloud fleet management via Rafay.
+- **EPYC**: AMD EPYC - The line of AMD server processors chosen for the host nodes.
+- **ETH**: Ethernet - The general networking standard used for the frontend storage, management, and control networks.
+- **ETCD**: etcd - The highly available distributed key-value store used as Kubernetes' backing store for cluster state.
+- **EVPN**: Ethernet Virtual Private Network - Used in combination with BGP to provide scalable network virtualization and segmentation.
+- **EW**: East-West - Refers to network traffic flowing horizontally between servers inside the data center.
+- **FIPS**: Federal Information Processing Standards - Security standards for cryptography compliance.
+- **FS**: File System - The method of organizing files on storage devices (like WEKA's parallel file system).
+- **GB**: Gigabyte - Unit of storage and memory capacity.
+- **GCP**: Google Cloud Platform - Cloud provider mentioned as a multi-cloud target.
+- **GPFS**: General Parallel File System - High-performance file system by IBM (now Storage Scale), an alternative to WEKA.
+- **GPU**: Graphics Processing Unit - The core hardware component used for parallel processing to train and infer AI models (e.g., NVIDIA H100).
+- **HA**: High Availability - An architectural design ensuring continuous cluster operation with minimal downtime through redundancy.
+- **HBM3**: High Bandwidth Memory 3 - The extremely fast memory stacked and integrated directly onto the H100 GPUs.
+- **HDD**: Hard Disk Drive - Slower, high-capacity storage media used in the Ceph cold storage tier for archival data.
+- **HDR**: High Data Rate - The 200Gbps InfiniBand networking standard.
+- **HP / HPE**: Hewlett Packard Enterprise - A server hardware vendor mentioned as an option.
+- **HPC**: High-Performance Computing - The computing architecture paradigm used for intensive, parallel workloads like AI training.
+- **HTTP / HTTPS**: Hypertext Transfer Protocol (Secure) - Standard protocols used for web traffic and API interactions.
+- **IB**: InfiniBand - The high-throughput, low-latency networking standard used exclusively for the backend GPU-to-GPU fabric.
+- **IOPS**: Input/Output Operations Per Second - A key performance metric used to measure and compare storage tier speeds.
+- **IOV (SR-IOV)**: Single Root I/O Virtualization - Allows a single physical PCIe network device to appear as multiple virtual interfaces.
+- **IP**: Internet Protocol - The core routing protocol of the network suite.
+- **IPMI**: Intelligent Platform Management Interface - Standard for Out-of-Band (OOB) management and remote console access of hardware.
+- **JAX**: JAX - A high-performance machine learning framework used by data scientists.
+- **JNPaaS**: Jupyter Notebook Platform as a Service - A self-service environment provided for data scientists to request interactive notebooks.
+- **K8S**: Kubernetes - The core container orchestration platform managing the infrastructure.
+- **KAI**: Kubeflow AI - The suite of tools deployed on Kubernetes for ML workflows and model lifecycle management.
+- **KFP**: Kubeflow Pipelines - A Kubeflow component used for orchestrating multi-step ML workflows.
+- **KOP**: Kubernetes Operations Platform - A multi-cluster fleet management platform (e.g., Rafay) providing a unified control plane.
+- **L2**: Layer 2 - The data link layer in networking, primarily dealing with switching and MAC addresses.
+- **L3**: Layer 3 - The network layer in networking, primarily dealing with routing and IP addresses.
+- **L40S**: NVIDIA L40S GPU - Another NVIDIA GPU model optimized for inference and graphics workloads.
+- **LACP**: Link Aggregation Control Protocol - Used for bundling multiple physical network links into a single logical link for redundancy and bandwidth.
+- **LLDP**: Link Layer Discovery Protocol - Used by network devices to advertise their identity, capabilities, and neighbors.
+- **LLM**: Large Language Model - The primary, compute-intensive AI workload intended to run on the cluster.
+- **LOM**: LAN on Motherboard - Built-in network ports provided directly on the server motherboard.
+- **LR**: Long Reach - A type of optical transceiver used for longer fiber optic cable runs (e.g., OSFP-400G-LR).
+- **LTS**: Long-Term Support - Refers to stable software versions (like OS or Kubernetes releases) maintained for extended periods.
+- **MAAS**: Metal as a Service - Canonical's bare-metal server provisioning tool used to deploy the base OS.
+- **MAC**: Media Access Control - The hardware address assigned to network interfaces.
+- **MIG**: Multi-Instance GPU - NVIDIA technology used to physically partition a single GPU into multiple isolated smaller instances for concurrent workloads.
+- **ML**: Machine Learning - The core discipline of the AI workloads running on the infrastructure.
+- **MLAG**: Multi-Chassis Link Aggregation Group - Allows forming a logical aggregated network link across two physically separate switches for HA.
+- **MPI**: Message Passing Interface - The communication standard used in parallel computing to pass data rapidly between distributed nodes.
+- **NDR**: Next Data Rate - Refers to the 400Gbps InfiniBand standard used for the high-speed backend GPU network.
+- **NFD**: Node Feature Discovery - A Kubernetes add-on used to automatically detect hardware features like specific GPUs on worker nodes.
+- **NFS**: Network File System - A file-level storage protocol, sometimes supported by WEKA or Ceph for legacy compatibility.
+- **NIC**: Network Interface Card - The hardware component connecting servers to the network (e.g., NVIDIA ConnectX-7).
+- **NIM**: NVIDIA Inference Microservice - Containerized and optimized AI inference services provided by NVIDIA.
+- **NOP / NOPs**: Node Operators / Network Operators - Refers to Custom Resource Definition (CRD) operators deployed by tenants in Kubernetes.
+- **NOS**: Network Operating System - The operating system running on the network switches (e.g., SONiC).
+- **NS**: Namespace - The Kubernetes resource boundary used to logically isolate tenant environments and workloads.
+- **NUMA**: Non-Uniform Memory Access - A memory architecture where access time depends on the memory's location relative to a processor, requiring careful workload pinning.
+- **NVMe**: Non-Volatile Memory Express - The extremely fast storage interface used for SSDs in the compute and hot storage nodes.
+- **OIDC**: OpenID Connect - An authentication protocol used for Single Sign-On (SSO) into the cluster platforms.
+- **ONNX**: Open Neural Network Exchange - An open standard format for representing machine learning models.
+- **OOB**: Out-Of-Band - A dedicated, physically separate management network used solely for hardware management via BMC/IPMI.
+- **OPA**: Open Policy Agent - A policy engine used in Kubernetes to define and enforce compliance, security, and resource rules.
+- **OS**: Operating System - The foundational host software for the servers (e.g., SUSE Linux).
+- **OSD**: Object Storage Daemon - A core component of the Ceph storage cluster responsible for storing data.
+- **PB**: Petabyte - A large unit of storage capacity, relevant for sizing the cold storage tiers.
+- **PDU**: Power Distribution Unit - The device that provides and manages power delivery to hardware racks in the data center.
+- **PFC**: Priority-based Flow Control - A network protocol used to pause traffic dynamically to prevent packet drops in lossless RoCE Ethernet networks.
+- **PV / PVC**: Persistent Volume / Persistent Volume Claim - The Kubernetes mechanisms for requesting, provisioning, and allocating storage to workloads.
+- **PXE**: Preboot eXecution Environment - The protocol used by MAAS for network-booting and imaging bare-metal servers.
+- **RA**: Reference Architecture - The overall documented technical design of the cluster infrastructure.
+- **RADOS**: Reliable Autonomic Distributed Object Store - The core distributed object storage layer underlying Ceph.
+- **RAFAY**: Rafay Systems - The commercial Kubernetes Operations Platform (KOP) chosen for unified multi-cluster fleet management.
+- **RAG**: Retrieval-Augmented Generation - An AI application architecture combining LLMs with external knowledge bases for improved accuracy.
+- **RAID**: Redundant Array of Independent Disks - Storage technology for local disk data redundancy.
+- **RAM**: Random Access Memory - The system memory used by the server CPUs.
+- **RBAC**: Role-Based Access Control - The security model used in Kubernetes and Rafay to manage user and tenant access permissions.
+- **RBD**: RADOS Block Device - The block storage interface provided by Ceph.
+- **RDMA**: Remote Direct Memory Access - Technology allowing direct memory transfers between computers without CPU involvement, essential for high-speed GPU-to-GPU communication.
+- **RFP**: Request for Proposal - A document soliciting proposals from vendors for hardware or software acquisition.
+- **RHEL**: Red Hat Enterprise Linux - An alternative enterprise Linux operating system considered for the hosts.
+- **RJ45**: Standard physical connector for twisted-pair copper Ethernet cables, typically used for the OOB management network.
+- **RKE2**: Rancher Kubernetes Engine 2 - A secure, CNCF-certified Kubernetes distribution that could be provisioned via CAPI.
+- **RPM**: Red Hat Package Manager - The software package format used by Linux distributions like RHEL and SUSE.
+- **S3**: Simple Storage Service - Amazon's object storage protocol, commonly implemented by Ceph or MinIO for the cold tier.
+- **SAI**: Switch Abstraction Interface - An API used by SONiC to program various vendor switch ASICs uniformly, preventing vendor lock-in.
+- **SAML**: Security Assertion Markup Language - An authentication standard used for SSO integration.
+- **SATA**: Serial Advanced Technology Attachment - A standard interface for connecting slower storage drives.
+- **SHARP**: Scalable Hierarchical Aggregation and Reduction Protocol - An in-network computing technology on NVIDIA InfiniBand switches that accelerates ML training by offloading MPI operations.
+- **SLA**: Service Level Agreement - A formal guarantee of uptime, performance, and support responsiveness.
+- **SLURM**: Simple Linux Utility for Resource Management - A job scheduler common in traditional HPC, often compared with Kubernetes for AI workloads.
+- **SONiC**: Software for Open Networking in the Cloud - The chosen open-source network operating system for the frontend Ethernet switches.
+- **SR**: Short Reach - A type of optical transceiver used for shorter fiber optic cable runs (e.g., OSFP-400G-SR) within the data center.
+- **SSD**: Solid State Drive - Fast flash-based storage media used in local node storage and hot tiers (NVMe).
+- **SSO**: Single Sign-On - An authentication mechanism allowing users to log in once and access multiple platforms (Rafay, KubeFlow).
+- **SSP**: Self-Service Portal - The tenant-facing interface (often built on Rafay/KubeFlow) used for provisioning resources like vClusters and Jupyter Notebooks.
+- **SUSE**: SUSE Linux Enterprise Server - The chosen host operating system for the bare-metal infrastructure nodes.
+- **SXM / SXM5**: Server Execution Module - The socket form factor used by NVIDIA for integrating high-end GPUs (like the H100) tightly with NVLink.
+- **TB**: Terabyte - A unit of storage capacity used for sizing local disks and hot storage tiers.
+- **TBD**: To Be Determined - A placeholder in documents for pending architectural decisions.
+- **TCP**: Transmission Control Protocol - The core connection-oriented network transport protocol.
+- **TF**: Terraform - Infrastructure as Code tool used for declarative provisioning of resources.
+- **TGI**: Text Generation Inference - Hugging Face's optimized inference server for deploying LLMs.
+- **TLS**: Transport Layer Security - A cryptographic protocol used to secure network communication and APIs.
+- **TRT**: TensorRT - NVIDIA's SDK for high-performance deep learning inference optimization.
+- **UDP**: User Datagram Protocol - The core connectionless network transport protocol.
+- **UI**: User Interface - The graphical front end of management portals like Rafay or KubeFlow.
+- **V100**: NVIDIA V100 GPU - An older generation NVIDIA GPU, mentioned for historical comparison.
+- **VCF**: VMware Cloud Foundation - A virtualization platform mentioned as an alternative tool for bare-metal provisioning.
+- **VIP**: Virtual IP - An IP address assigned to multiple servers to provide High Availability (HA) for Kubernetes control planes.
+- **VLAN**: Virtual Local Area Network - A logical subdivision of the network at Layer 2 for isolating traffic types (e.g., storage, management).
+- **VM**: Virtual Machine - A virtualized compute instance, contrasting with the bare-metal approach used in this architecture.
+- **VRAM**: Video RAM - The memory located directly on the GPU (e.g., 80GB on H100), critical for holding large AI models.
+- **VRL**: Virtual Resource Layer - A resource quota enforcement layer used to manage and cap limits for tenant vClusters.
+- **WEKA**: WekaIO - The high-performance parallel file system chosen for the "hot" storage tier to feed data rapidly to GPUs.
+- **YAML**: YAML Ain't Markup Language - A human-readable data serialization language used extensively for Kubernetes configuration manifests.
+- **ZTP**: Zero Touch Provisioning - An automated method for provisioning bare-metal servers or network switches as soon as they are plugged in.

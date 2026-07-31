@@ -1,0 +1,20 @@
+\chapter{Kubernetes Platform}
+
+\section{Bare Metal Provisioning}
+The cluster lifecycle begins at bare metal. The platform embraces a pure cloud-native approach by utilizing \textbf{Metal3}, \textbf{OpenStack Ironic}, and the \textbf{Cluster API (CAPI)} to manage the physical servers natively through Kubernetes. When a new node is powered on, \texttt{ironic-inspector} discovers the hardware via the BMC/iDRAC network and automatically registers it as a \texttt{BareMetalHost} Custom Resource Definition (CRD). The platform engineer then applies a YAML manifest via GitOps to instruct Metal3 to PXE boot the node, install the OS via \texttt{cloud-init}, and seamlessly join it to the Kubernetes cluster without the need for a legacy monolithic cluster manager.
+
+\section{Kubernetes Control Plane}
+The orchestration layer is powered by \textbf{RKE2} (Rancher Kubernetes Engine 2), a highly secure, CNCF-certified Kubernetes distribution. 
+\begin{itemize}
+    \item \textbf{High Availability:} The 5-Node master architecture runs an \texttt{etcd} 5-node Raft consensus, allowing for up to two simultaneous master node failures without loss of quorum.
+    \item \textbf{Load Balancing:} \textbf{Kube-VIP} is deployed to provide BGP ECMP load balancing for the Kubernetes API server, eliminating the need for external hardware load balancers.
+\end{itemize}
+
+\section{Kubernetes Worker Plane}
+The worker nodes (the 8x GPU servers) run the core AI workloads. They are equipped with specialized system-level components:
+\begin{itemize}
+    \item \textbf{Container Network Interface (CNI):} \textbf{Cilium} is utilized for eBPF-powered, high-performance networking and stringent NetworkPolicy enforcement. \textbf{Multus} is used to attach the secondary InfiniBand interfaces to Pods via SR-IOV.
+    \item \textbf{NVIDIA GPU Operator:} Automatically manages the lifecycle of NVIDIA drivers, container runtimes, device plugins, and Multi-Instance GPU (MIG) configurations on the worker nodes.
+    \item \textbf{Node Feature Discovery (NFD):} Automatically detects hardware capabilities (e.g., PCIe topologies, NVLink presence) and labels nodes for intelligent workload scheduling.
+    \item \textbf{MetalLB:} Provides LoadBalancer services for tenant applications exposing ingress points.
+\end{itemize}

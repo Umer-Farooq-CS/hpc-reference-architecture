@@ -1,0 +1,33 @@
+\chapter{Network Architecture}
+
+The network architecture is distinctly separated into three isolated planes, ensuring that massive AI training workloads do not interfere with storage I/O or management operations.
+
+\section{InfiniBand Plane (Compute Fabric)}
+The backbone of the AI training cluster is the InfiniBand network.
+\begin{itemize}
+    \item \textbf{Switch:} 1x \textbf{NVIDIA Quantum-2 QM9700}.
+    \item \textbf{Specifications:} 64 Ports, NDR 400G.
+    \item \textbf{Topology:} Single-switch, 0-hop topology, providing non-blocking bandwidth across all 64 GPUs.
+    \item \textbf{Features:} Hardware-accelerated reductions using NVIDIA SHARP offloading.
+\end{itemize}
+
+\textbf{Note on Scaling Boundary:} The QM9700 switch is intentionally sized exactly for the 64-GPU RFP baseline. All 64 ports are utilized at steady state (100\% capacity). Any growth beyond 64 GPUs will require upgrading to the 400-port NVIDIA Quantum-2 QM9790 switch to provide additional ports while maintaining the 0-hop topology.
+
+\section{Ethernet Plane (Storage \& Control Fabric)}
+The Ethernet plane handles storage traffic, external access, and Kubernetes orchestration.
+\begin{itemize}
+    \item \textbf{Switches:} 2x 64-Port 100GbE Whitebox Leaf Switches (allowing for 47\% future growth headroom).
+    \item \textbf{Operating System:} \textbf{SONiC OS} (Software for Open Networking in the Cloud), chosen for its open-source agility, BGP EVPN/VxLAN support, and seamless integration with network automation.
+    \item \textbf{Configuration:} Multi-Chassis Link Aggregation (MLAG) for high availability, utilizing BGP L3 routing.
+    \item \textbf{Protocols:} Native RoCEv2 (RDMA over Converged Ethernet) to support high-throughput WEKA storage access.
+\end{itemize}
+
+\section{Out-of-Band Management Plane}
+For remote hardware control, provisioning, and diagnostics.
+\begin{itemize}
+    \item \textbf{Switch:} 1x 1GbE Management Switch (48-port).
+    \item \textbf{Target:} Connects to iDRAC/BMC interfaces on all servers, serving as the PXE boot network for bare-metal provisioning.
+\end{itemize}
+
+\section{Network Automation}
+Network configuration and management are driven by \textbf{Nokia EDA} (Event-Driven Automation). This intent-based network system allows for zero-touch provisioning of the SONiC switches and dynamically configures VxLAN tunnels to ensure network-level isolation between tenant namespaces.

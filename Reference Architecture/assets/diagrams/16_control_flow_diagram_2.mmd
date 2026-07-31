@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+
+    actor Tenant
+    participant KF_PIPE  as KubeFlow Pipelines (Argo)
+    participant API      as kube-apiserver (RKE2)
+    participant TrainOp  as Training Operator
+    participant KAI      as KAI Scheduler
+    participant CILIUM   as Cilium CNI + Multus
+    participant Node_M   as GPU Node 1 (Master)
+    participant Node_W   as GPU Nodes 2-8 (Workers)
+    participant IB       as InfiniBand Fabric (QM9700)
+    participant Storage  as Storage CSI (WEKA hot-nvme)
+
+    Tenant->>KF_PIPE: 1. Submits KubeFlow Pipeline run (e.g. LLaMA fine-tune — 8 nodes × 8 GPUs)
+    KF_PIPE->>API: 2. Creates a PyTorchJob CRD in tenant namespace
+    API->>TrainOp: 3. Training Operator detects new PyTorchJob
+    TrainOp->>API: 4. Creates 8 Pods (1 Master + 7 Workers), each requesting 8x H100 GPUs
+    API->>KAI: 5. 8 Pods enter Pending — KAI Scheduler takes over
+    KAI->>KAI: 6. Gang scheduling check — are ALL 8 nodes × 8 GPUs free simultaneously?
+    KAI->>KAI: 7. Topology check — prefer same-rack nodes to minimise IB hops
+    KAI->>API: 8. All 8 nodes available — KAI atomically binds ALL 8 Pods at once
+    API->>Node_M: 9. Master node kubelet pulls training container image
+    API->>Node_W: 10. Worker node kubelets pull training container image (parallel)
+    Node_M->>Storage: 11. Master mounts dataset from WEKA hot-nvme (CSI Driver)
+    Node_W->>Storage: 12. Workers mount same dataset (parallel, WEKA handles concurrent reads)
+    CILIUM->>Node_M: 13. Cilium assigns Ethernet IP (control comms — NCCL rendezvous)
+    CILIUM->>Node_W: 14. Cilium assigns Ethernet IPs to all Workers
+    Node_M->>IB: 15. Training starts — gradient AllReduce runs over InfiniBand NDR 400G
+    Node_W->>IB: 16. Workers sync gradients via IB (SHARP offload on QM9700 switch)
+    Node_M->>KF_PIPE: 17. Training completes — job reports success to KubeFlow Pipelines
+    KF_PIPE->>Storage: 18. Model checkpoint saved to MinIO cold-s3 bucket (tenant's S3 bucket)

@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+
+    actor Admin
+    participant EDA     as Nokia EDA (Event-Driven Automation)
+    participant SONIC   as SONiC Leaf Switches (SW1 + SW2 in Rack C)
+    participant CAPI    as Cluster API (CAPI)
+    participant Ironic  as Metal3 Ironic / PXE
+    participant Node    as Bare Metal Worker Node
+    participant Rafay   as Rafay SaaS Controller
+    participant ArgoCD  as ArgoCD GitOps
+    participant Git     as Git Repository (Blueprint)
+    participant API     as kube-apiserver (RKE2)
+
+    Note over Admin,SONIC: PHASE 0 — Switch Pre-Configuration (one-time, before any PXE boot)
+    Admin->>EDA: Pushes SONiC switch config to EDA (VLANs, BGP, PFC, ECN, MLAG peer-link)
+    EDA->>SONIC: EDA applies config to both SONiC leaf switches via GitOps push
+    Admin->>SONIC: Admin verifies MLAG peer-link up, BGP sessions established, RoCEv2 PFC enabled
+
+    Note over Admin,API: PHASE 1 — Metal3 Bare Metal Provisioning
+    Node->>Ironic: Node is powered on — ironic-inspector discovers it via BMC/iDRAC
+    Ironic->>API: Registers node as BareMetalHost CRD in Kubernetes
+    Admin->>CAPI: Admin applies Machine YAML manifest via GitOps
+    CAPI->>Ironic: CAPI instructs Ironic to provision the host
+    Ironic->>Node: PXE boots node & installs Ubuntu OS via cloud-init
+    Node->>Rafay: cloud-init auto-starts Rafay Agent — dials out to Rafay SaaS (HTTPS)
+    Rafay->>Node: Rafay assigns node to the cluster and selects Blueprint (gpu-cluster-v1)
+    Rafay->>ArgoCD: Rafay triggers ArgoCD sync of Blueprint from Git
+    ArgoCD->>Git: ArgoCD pulls Blueprint manifest from Git repository
+    Git-->>ArgoCD: Returns Helm charts (RKE2, GPU Operator, Cilium, KubeFlow, KAI)
+    ArgoCD->>API: ArgoCD applies manifests to cluster (in order: CNI → GPU Operator → Platform)
+    API->>Node: Kubernetes schedules GPU Operator DaemonSet on new node
+    Node->>Node: GPU Operator installs NVIDIA drivers + DCGM + mig-parted on node
+    API->>Node: Kubernetes schedules Cilium DaemonSet — networking is ready
+    Rafay->>Admin: Node is Ready — Rafay dashboard shows green health status
+    Admin->>Rafay: Admin creates tenant Project in Rafay → namespace + KAI Queue auto-provisioned
