@@ -15,7 +15,7 @@ Efficient allocation of the 64 H100 GPUs is critical. The platform employs the \
 \begin{itemize}
     \item \textbf{Gang Scheduling:} Ensures all pods in a distributed training job are scheduled simultaneously to prevent resource deadlocks.
     \item \textbf{Topology Awareness:} Ensures jobs are scheduled on GPUs physically close to each other (e.g., within the same NVLink domain or same switch).
-    \item \textbf{Priority Queues:} Enforces guaranteed quotas and burst limits across different tenant queues.
+    \item \textbf{Priority Queues:} Enforces dynamic best-effort burst limits and queue priorities across different tenants.
 \end{itemize}
 
 \section{Operations and Observability}

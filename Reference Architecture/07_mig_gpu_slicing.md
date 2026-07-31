@@ -35,7 +35,7 @@ To satisfy the **110-tenant RFP requirement** on 64 physical H100 GPUs (80GB VRA
 
 | Workload Category | Pool | MIG Profile | Slices / VRAM | Physical GPUs | Tenants Supported | Startup Speed SLA |
 |---|---|---|---|---|---|---|
-| **Heavy Training** | Pool 1 | `7g.80gb` (full GPU) | 7 Slices / 80GB | 16 dedicated (Srv 1+2) | **16 Tenants** | Instant (0s) |
+| Heavy Training | Pool 1 | `7g.80gb` (full GPU) | 7 Slices / 80GB | 16 dedicated (Srv 1+2) | **1 to 2 Tenants** (allocated in 8-GPU node increments) | Instant (0s) |
 | **Medium-Large Inference** | Pool 2 | `3g.40gb` | 3 Slices / 40GB | 32 shared GPUs ¹ (Srv 3–6) | **32 Tenants** | Instant (0s) |
 | **Medium Inference** | Pool 2 | `2g.20gb` | 2 Slices / 20GB | 32 shared GPUs ¹ (Srv 3–6) | **32 Tenants** | Instant (0s) |
 | **Light Jupyter / Dev** | Pool 2 | `1g.10gb` | 1 Slice / 10GB | 32 shared GPUs ¹ (Srv 3–6) | **64 Tenants** | Instant (0s) |

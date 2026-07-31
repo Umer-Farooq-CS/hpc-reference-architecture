@@ -249,9 +249,9 @@ The tenant gets namespace-scoped access but enjoys the performance of dedicated 
 ```
 Tenant Tiers:
 ├── Tier 1: Shared Pool (80% of tenants)
-│   ├── Max GPU per tenant: 4 GPUs (or 16 MIG slices)
+│   ├── Max GPU per tenant: 4 MIG slices
 │   ├── Namespace isolation + NetworkPolicy
-│   └── KAI Queue: guaranteed 2 GPUs, max burst 8
+│   └── KAI Queue: 0 guaranteed GPUs, max burst 4 MIG slices
 │
 ├── Tier 2: vCluster (15% of tenants)
 │   ├── Max GPU per vCluster: 16 GPUs
@@ -293,5 +293,6 @@ Tenant Tiers:
 ### 4. Tenant Queue Configuration (Resource Allocation)
 **Decision:** KAI Scheduler queue policies are defined as follows:
 
-*   **Tier 1 (Shared):** Guaranteed 2 GPUs (MIG slices) with the ability to burst up to 4 if the cluster is under-utilized.
-*   **Tier 2 (vCluster):** Guaranteed 8 GPUs with the ability to burst up to 16.
+*   **Tier 1 (Shared):** 0 Guaranteed GPUs, with a Best-Effort maximum burst limit of 4 MIG slices per tenant based on cluster availability.
+*   **Tier 2 (vCluster):** 0 Guaranteed GPUs, with a Best-Effort maximum burst limit of 16 GPUs based on cluster availability.
+*   **Tier 3 (Dedicated Node):** Strictly limited to a maximum of 1 or 2 tenants simultaneously, matching the 16-GPU physical capacity of Pool 1.

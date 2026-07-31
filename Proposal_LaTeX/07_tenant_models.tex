@@ -7,7 +7,7 @@ Serving approximately 80\% of tenants.
 \begin{itemize}
     \item \textbf{Isolation:} Kubernetes Namespace isolation bounded by strict NetworkPolicies and ResourceQuotas.
     \item \textbf{Resource Cap:} Maximum of 4 MIG slices and 500 GB storage per tenant (base quota).
-    \item \textbf{Queue Policy:} Guaranteed 2 GPUs (MIG slices) with burst capabilities up to 4 if the cluster is under-utilized.
+    \item \textbf{Queue Policy:} 0 Guaranteed GPUs, with a Best-Effort maximum burst limit up to 4 MIG slices if the cluster is under-utilized.
 \end{itemize}
 
 \section{Tier 2: vCluster (Virtual Kubernetes)}
@@ -15,7 +15,7 @@ Serving approximately 15\% of tenants who require deeper Kubernetes integration.
 \begin{itemize}
     \item \textbf{Technology:} Virtual Kubernetes clusters providing dedicated API servers and control planes to the tenant, while workloads map down to the physical worker nodes via a syncer component.
     \item \textbf{Benefits:} Tenants can install custom CRDs, Operators, and configure cluster-wide RBAC without affecting the physical host cluster.
-    \item \textbf{Queue Policy:} Guaranteed 8 GPUs (via VRL) with the ability to burst up to a \textbf{Resource Cap} of 16 GPUs and 2 TB storage (base quota).
+    \item \textbf{Queue Policy:} 0 Guaranteed GPUs (via VRL), with a Best-Effort maximum burst limit up to a \textbf{Resource Cap} of 16 GPUs and 2 TB storage (base quota).
     \item \textbf{VRL (Virtual Resource Layer):} The vCluster syncer maps virtual requests into physical ResourceQuotas tied to a specific KAI Scheduler queue.
 \end{itemize}
 
@@ -23,7 +23,7 @@ Serving approximately 15\% of tenants who require deeper Kubernetes integration.
 Serving approximately 5\% of tenants running massive, monolithic training runs (e.g., 70B+ parameter models).
 \begin{itemize}
     \item \textbf{Isolation:} Physical isolation via Kubernetes Taints and Tolerations. Tenants are allocated full \texttt{7g.80gb} un-sliced GPUs from the shared cluster.
-    \item \textbf{Resource Cap:} Allocated in full node increments (e.g., 1 to 2 nodes yielding 8 to 16 dedicated GPUs).
+    \item \textbf{Resource Cap:} Allocated in full node increments (e.g., 1 to 2 nodes yielding 8 to 16 dedicated GPUs). Strictly limited to 1 or 2 tenants simultaneously based on hardware capacity.
     \item \textbf{Access:} Namespace-admin access with dedicated InfiniBand bandwidth, eliminating the noisy-neighbor problem completely without requiring a separate control plane.
 \end{itemize}
 

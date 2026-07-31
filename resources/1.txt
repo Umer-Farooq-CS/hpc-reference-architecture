@@ -4,7 +4,7 @@ Here is the structured text based directly on the provided images.
 
 * The architecture involves a specific "Hardware Layer".
 * The network utilizes both "InfiniBand" and "Ethernet" connections.
-* The configuration includes a "6 NICs Structure".
+* The configuration includes a "12-Connection NIC Structure (10 discrete adapters)".
 * Traffic flow considerations include "NS/EW" (North-South / East-West) routing.
 
 ### **Topology & Architecture**

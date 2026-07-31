@@ -70,7 +70,7 @@ The whole stack — from bare metal up to tenant self-service — is what the te
 | **Ethernet** | Standard control plane and management traffic (North-South / East-West) |
 
 ### 3.3 NIC Structure
-- **6 NICs per Node** — multiple network interface cards per server
+- **10 discrete PCIe adapters (12 Connections) per Node** — providing strict isolation: 8x Single-Port IB (1 per GPU), 1x Dual-Port 100GbE, 1x Dual-Port LOM/BMC.
 - **NS/EW Traffic:** North-South (client <-> datacenter) and East-West (server <-> server) traffic are separated
 
 ### 3.4 RDMA

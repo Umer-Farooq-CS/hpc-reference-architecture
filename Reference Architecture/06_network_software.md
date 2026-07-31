@@ -1,4 +1,4 @@
-﻿# Network Software & Automation Layer
+# Network Software & Automation Layer
 
 > Part of the [Chosen Architecture](index.md) specification.
 
@@ -29,7 +29,7 @@
 ## 4. Tenant Isolation & Overlay Network
 **Decision:** **VxLAN with EVPN**.
 
-*   **Rationale:** To support secure multi-tenancy (up to 110 tenants) sharing the same physical network, VxLAN provides the necessary network virtualization (overlay network). EVPN (Ethernet VPN), managed via BGP in SONiC, acts as the control plane for VxLAN, providing a highly scalable and robust tenant isolation strategy.
+*   **Rationale:** EVPN (Ethernet VPN) managed via BGP in SONiC is utilized to isolate the physical bare-metal nodes (e.g., Tier 3 Dedicated tenants and Storage networks) into separate hardware VRFs. For the 95% of tenants operating on the shared Kubernetes cluster (Tier 1 & Tier 2), network isolation is exclusively enforced within the cluster via eBPF Cilium NetworkPolicies, treating the SONiC EVPN fabric as a high-performance underlay.
 
 ---
 *Back to [Chosen Architecture Index](index.md)*
