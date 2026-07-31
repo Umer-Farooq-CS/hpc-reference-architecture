@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant HW as Physical GPU Node
+    participant M3 as Metal3 (Ironic)
+    participant KAI as KAI Scheduler
+    participant Argo as ArgoCD
+    participant SB as Standby BareMetalHost
+
+    HW--xM3: BMC heartbeat lost (Power Failure)
+    M3->>CP: Mark Node as NotReady / Tainted
+    CP->>KAI: Evict Pods (PyTorchJob interrupted)
+    KAI->>KAI: Re-queue distributed training job
+    M3->>Argo: Alert: Compute capacity degraded
+    Argo->>M3: Request replacement node provision
+    M3->>SB: Power on via iDRAC
+    SB-->>M3: PXE Boot & Inspect
+    M3->>SB: Flash OS Image
+    SB-->>CP: Join K8s Cluster
+    KAI->>SB: Schedule queued PyTorchJob pods
+    Note over HW, SB: Cluster healed with zero human intervention

@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+
+    actor Tenant
+    participant SSP     as Self-Service Portal (SSP)
+    participant Rafay   as Rafay SaaS Controller
+    participant ArgoCD  as ArgoCD GitOps
+    participant API     as kube-apiserver (RKE2)
+    participant KAI     as KAI Scheduler
+    participant GPUOP   as NVIDIA GPU Operator
+    participant KF_NB   as KubeFlow Notebooks
+    participant Storage as Storage CSI (WEKA / Ceph)
+    participant Node    as GPU Worker Node
+
+    Tenant->>SSP: 1. Clicks "New Notebook" — selects GPU size (e.g. 1x H100 MIG 10GB)
+    SSP->>Rafay: 2. Sends notebook request via Rafay REST API (with tenant identity + GPU spec)
+    Rafay->>API: 3. Creates KubeFlow Notebook CRD in tenant's namespace
+    API->>KF_NB: 4. KubeFlow Notebook Controller watches for new Notebook CRDs
+    KF_NB->>API: 5. Controller creates a StatefulSet (1 Pod) with GPU resource request
+    API->>KAI: 6. Pod enters Pending — kube-apiserver calls KAI Scheduler
+    KAI->>KAI: 7. Checks tenant's KAI Queue: guaranteed quota available?
+    KAI->>GPUOP: 8. Selects GPU Worker Node, requests MIG slice from GPU Operator
+    GPUOP->>Node: 9. mig-parted carves H100 → 1x MIG 10GB slice on target node
+    GPUOP->>API: 10. Reports MIG slice as allocatable resource
+    KAI->>API: 11. Binds Pod to the selected node + MIG slice
+    API->>Node: 12. kubelet on worker node pulls Jupyter container image
+    Node->>Storage: 13. Storage CSI mounts tenant's persistent PVC (Ceph block storage)
+    Node->>Tenant: 14. Pod is Running — SSP displays Jupyter Lab URL
+    Tenant->>Node: 15. Tenant accesses Jupyter Lab directly (via MetalLB ingress IP)

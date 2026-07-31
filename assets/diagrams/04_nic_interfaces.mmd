@@ -1,0 +1,54 @@
+flowchart LR
+
+    %% ================================================================
+    %%  CLASS DEFINITIONS  -  matching global style
+    %% ================================================================
+
+    classDef ibSwitch   fill:#1a1a2e,stroke:#7b2fff,stroke-width:3px,color:#e0d7ff,font-weight:bold
+    classDef ethSwitch  fill:#0f3460,stroke:#00b4d8,stroke-width:2px,color:#caf0f8,font-weight:bold
+    classDef mgmtSwitch fill:#2b2b2b,stroke:#aaaaaa,stroke-width:2px,color:#dddddd,font-weight:bold
+    classDef gpuNode    fill:#16213e,stroke:#f5a623,stroke-width:2px,color:#fff3cd,font-weight:bold
+    classDef ibPort     fill:#2d1b69,stroke:#9b59b6,stroke-width:1px,color:#d7b4f3
+    classDef ethPort    fill:#0a2342,stroke:#2980b9,stroke-width:1px,color:#aed6f1
+    classDef bmcPort    fill:#222222,stroke:#7f8c8d,stroke-width:1px,color:#bdc3c7
+
+    %% ================================================================
+    %%  GPU NODE REAR PANEL  -  Port layout
+    %% ================================================================
+
+    subgraph NODE ["REAR VIEW  |  Dell PowerEdge XE9680  |  Single GPU Node"]
+        direction TB
+        BMC_P["Ports 1 & 2  |  2x 1GbE RJ45  |  Onboard LOM / BMC"]
+        ETH_P["Ports 3 & 4  |  2x 100GbE  |  ConnectX-6 Ethernet PCIe"]
+        IB_P["Ports 5 to 12  |  8x 400Gbps NDR  |  8x ConnectX-7 IB  (1 per GPU)"]
+    end
+
+    %% ================================================================
+    %%  DESTINATION SWITCHES
+    %% ================================================================
+
+    MGMT_D["1GbE Management Switch
+    iDRAC / BMC / IPMI"]
+    ETH_D["100GbE SONIC Leaf Switches
+    Storage & K8s Plane"]
+    IB_D["400G Quantum-2 IB Switch
+    GPU Training Fabric"]
+
+    %% ================================================================
+    %%  CONNECTIONS
+    %% ================================================================
+
+    BMC_P -.-|1GbE OOB| MGMT_D
+    ETH_P ===|100GbE Fiber| ETH_D
+    IB_P ==>|8x NDR 400G DAC| IB_D
+
+    %% ================================================================
+    %%  APPLY CLASSES
+    %% ================================================================
+
+    class IB_D ibSwitch
+    class ETH_D ethSwitch
+    class MGMT_D mgmtSwitch
+    class IB_P ibPort
+    class ETH_P ethPort
+    class BMC_P bmcPort

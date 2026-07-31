@@ -1,0 +1,1796 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Reference Architecture for MAK Technology">
+      
+      
+      
+      
+        <link rel="prev" href="../13_rafay/">
+      
+      
+        <link rel="next" href="../18_service_layer/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>17. Tenant Models - HPC / GPU Cloud Platform Architecture</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#17_tenant_modelsmd-tenant-models-deep-dive" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="HPC / GPU Cloud Platform Architecture" class="md-header__button md-logo" aria-label="HPC / GPU Cloud Platform Architecture" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HPC / GPU Cloud Platform Architecture
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              17. Tenant Models
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01_rfp_requirements/" class="md-tabs__link">
+          
+  
+  
+  Introduction
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../03_compute_servers/" class="md-tabs__link">
+          
+  
+  
+  Architecture Detail
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Tenant Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../14_hardware_diagram/" class="md-tabs__link">
+          
+  
+  
+  Full Diagrams
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="HPC / GPU Cloud Platform Architecture" class="md-nav__button md-logo" aria-label="HPC / GPU Cloud Platform Architecture" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    HPC / GPU Cloud Platform Architecture
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_rfp_requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. RFP Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Executive Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Detail
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture Detail
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_compute_servers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Compute Servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_nic_interfaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. NIC Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_network_switching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Network Switching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_network_software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Network Software
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_mig_gpu_slicing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. MIG GPU Slicing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08_storage_tiers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Storage Tiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09_bare_metal_provisioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Bare Metal Provisioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_control_plane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Control Plane
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11_kubernetes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12_kubeflow_kai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. KubeFlow & KAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13_rafay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Rafay Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tenant Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tenant Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Tenant Models
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Tenant Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-overview-why-3-tenant-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Overview — Why 3 Tenant Models?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-type-1-normal-shared-provisioning-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Type 1 — Normal Shared Provisioning Clusters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-type-2-vclusters-virtual-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Type 2 — vClusters (Virtual Clusters)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-type-3-dedicated-node-allocation-full-gpu-pass-through" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Type 3 — Dedicated Node Allocation (Full GPU Pass-Through)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-comparison-matrix-all-3-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Comparison Matrix — All 3 Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-tenant-onboarding-flow-all-3-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Tenant Onboarding Flow (All 3 Types)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-standard-architecture-recommendation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Standard Architecture Recommendation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-architecture-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final Architecture Decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18_service_layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Service Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Full Diagrams
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Full Diagrams
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14_hardware_diagram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Hardware Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15_software_diagram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Software Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16_control_flow_diagram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Control Flow Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="17_tenant_modelsmd-tenant-models-deep-dive">17_tenant_models.md - Tenant Models (Deep Dive)</h1>
+<blockquote>
+<p>Covers: All 3 tenant request models — Shared Clusters, vClusters, and Bare Metal Clusters.<br />
+Includes isolation levels, performance characteristics, use cases, and K8s stack per type.</p>
+</blockquote>
+<hr />
+<h2 id="1-overview-why-3-tenant-models">1. Overview — Why 3 Tenant Models?</h2>
+<p>Not all tenants need the same thing. A data scientist exploring ideas needs something different from a production AI team training a 70B parameter model. Having 3 models lets you match resources and isolation to actual needs:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Isolation</th>
+<th>Performance</th>
+<th>Cost to Tenant</th>
+<th>Time to Provision</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Shared Cluster</strong></td>
+<td>Low (namespace)</td>
+<td>Variable (noisy neighbor)</td>
+<td>Low</td>
+<td>Minutes</td>
+</tr>
+<tr>
+<td><strong>vCluster</strong></td>
+<td>Medium (virtual K8s)</td>
+<td>Good (controlled)</td>
+<td>Medium</td>
+<td>Minutes</td>
+</tr>
+<tr>
+<td><strong>Dedicated Node</strong></td>
+<td>High (node taints &amp; full GPUs)</td>
+<td>Maximum (dedicated HW)</td>
+<td>High</td>
+<td>Minutes</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-type-1-normal-shared-provisioning-clusters">2. Type 1 — Normal Shared Provisioning Clusters</h2>
+<h3 id="what-is-it">What Is It?</h3>
+<p>A single Kubernetes cluster shared by multiple tenants. Each tenant gets a <strong>Namespace</strong> within the cluster. Resources (CPUs, GPUs, memory) are pooled and allocated dynamically.</p>
+<h3 id="how-it-works">How It Works</h3>
+<pre><code>Physical K8s Cluster
+├── Namespace: tenant-alice
+│   ├── ResourceQuota: 4 GPUs, 64GB RAM, 500GB PVC
+│   └── Pods: Jupyter, training jobs
+├── Namespace: tenant-bob
+│   ├── ResourceQuota: 2 GPUs, 32GB RAM, 200GB PVC
+│   └── Pods: inference service
+└── Namespace: tenant-charlie
+    ├── ResourceQuota: 8 GPUs, 128GB RAM, 1TB PVC
+    └── Pods: distributed training (4-node PyTorchJob)
+</code></pre>
+<p><strong>"You ask to run, it runs"</strong> — as your boss described. Submit a request, it runs on available resources.</p>
+<h3 id="isolation-mechanisms">Isolation Mechanisms</h3>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Isolation Tool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CPU / RAM</strong></td>
+<td>ResourceQuota per namespace</td>
+</tr>
+<tr>
+<td><strong>GPU</strong></td>
+<td>KAI Scheduler Queue with guaranteed quota</td>
+</tr>
+<tr>
+<td><strong>Storage</strong></td>
+<td>PVC + StorageQuota per namespace</td>
+</tr>
+<tr>
+<td><strong>Network</strong></td>
+<td>Kubernetes NetworkPolicy (Cilium)</td>
+</tr>
+<tr>
+<td><strong>Secrets</strong></td>
+<td>Namespace-scoped, tenant can't see others</td>
+</tr>
+<tr>
+<td><strong>API access</strong></td>
+<td>K8s RBAC — tenant is admin of their namespace only</td>
+</tr>
+</tbody>
+</table>
+<h3 id="noisy-neighbor-problem">Noisy Neighbor Problem</h3>
+<p><strong>The main risk of shared clusters:</strong> One tenant's heavy workload can affect others.</p>
+<ul>
+<li>A tenant running a large training job saturates InfiniBand → other tenants' jobs slow down</li>
+<li>A tenant consuming all NVMe I/O → hot storage performance degrades for all</li>
+</ul>
+<p><strong>Mitigations:</strong></p>
+<ul>
+<li>Network QoS policies on SONIC switches (traffic shaping per namespace)</li>
+<li>I/O throttling via cgroups (Kubernetes I/O limits)</li>
+<li>KAI Scheduler queue priorities</li>
+</ul>
+<h3 id="best-for">Best For</h3>
+<ul>
+<li>Development and experimentation workloads</li>
+<li>Small teams with simple GPU needs</li>
+<li>Tenants that don't need Kubernetes expertise</li>
+<li>Maximum resource utilization (pooling helps)</li>
+</ul>
+<hr />
+<h2 id="3-type-2-vclusters-virtual-clusters">3. Type 2 — vClusters (Virtual Clusters)</h2>
+<h3 id="what-is-it_1">What Is It?</h3>
+<p>A <strong>vCluster</strong> is a fully-functional, isolated Kubernetes cluster running inside a namespace of the physical cluster. The tenant gets their own K8s API server, their own control plane, and feels like they have a dedicated cluster — but the actual workloads still run on shared physical hardware.</p>
+<p><strong>Technology:</strong> vcluster by Loft Labs (github.com/loft-sh/vcluster)</p>
+<h3 id="how-vcluster-works">How vCluster Works</h3>
+<pre><code>Physical K8s Cluster (host cluster — hidden from tenant)
+└── Namespace: vcluster-tenant-A
+    ├── [Pod] k3s API server (tenant's K8s control plane)
+    ├── [Pod] syncer (syncs tenant Pods down to host cluster)
+    ├── PVC: etcd data (tenant's cluster state)
+    └── NetworkPolicy: isolated from other namespaces
+
+Tenant's View (via kubeconfig):
+└── My K8s Cluster (they think it's dedicated)
+    ├── All standard K8s resources (Deployments, Services, etc.)
+    ├── Custom CRDs (they can install their own operators)
+    ├── KubeFlow (pre-installed by Rafay Blueprint)
+    └── Their own namespaces within vCluster
+</code></pre>
+<h3 id="the-syncer-key-vcluster-component">The Syncer — Key vCluster Component</h3>
+<p>The <strong>syncer</strong> is what makes vClusters work. It:</p>
+<ul>
+<li>Watches the tenant's vCluster API for Pod creation</li>
+<li>Translates those Pods into real Pods on the host cluster (with GPU resource requests)</li>
+<li>Maps tenant namespaces → host namespace</li>
+<li>Maps tenant PVCs → host PVCs (with the actual StorageClass)</li>
+</ul>
+<p>The tenant sees their Pod as running in <code>default</code> namespace of their vCluster. The host cluster sees it in <code>vcluster-tenant-A</code> namespace.</p>
+<h3 id="stack-inside-a-vcluster-from-your-notes">Stack Inside a vCluster (from your notes)</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>What It Is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>K8s</strong></td>
+<td>vCluster's own K8s API (typically k3s or k8s)</td>
+</tr>
+<tr>
+<td><strong>CRD NOPs</strong></td>
+<td>Custom Resource Definitions + NOP operators (tenant can install their own operators/CRDs)</td>
+</tr>
+<tr>
+<td><strong>KFlow (KubeFlow)</strong></td>
+<td>Pre-installed by Rafay blueprint — tenant's ML orchestration</td>
+</tr>
+<tr>
+<td><strong>EDA</strong></td>
+<td>Event-Driven Automation for the tenant's network config</td>
+</tr>
+<tr>
+<td><strong>VRL</strong></td>
+<td>Virtual Resource Layer — enforces resource quotas for the vCluster</td>
+</tr>
+</tbody>
+</table>
+<h3 id="vrl-virtual-resource-layer">VRL — Virtual Resource Layer</h3>
+<p><strong>VRL</strong> is likely a resource quota enforcement layer for vClusters. It ensures:</p>
+<ul>
+<li>The vCluster cannot exceed its allocated GPU/CPU/memory limits on the host cluster</li>
+<li>Tenant resource requests are translated to host ResourceQuota constraints</li>
+<li>KAI Scheduler Queue is created for the vCluster (with its guaranteed/max GPU allocation)</li>
+</ul>
+<h3 id="vcluster-isolation-vs-shared-namespace">vCluster Isolation vs Shared Namespace</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Shared Namespace</th>
+<th>vCluster</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>K8s API isolation</strong></td>
+<td>❌ Shared</td>
+<td>✅ Separate API server</td>
+</tr>
+<tr>
+<td><strong>CRD installation</strong></td>
+<td>❌ Requires admin</td>
+<td>✅ Tenant can install CRDs</td>
+</tr>
+<tr>
+<td><strong>Operator installation</strong></td>
+<td>❌ Requires admin</td>
+<td>✅ Tenant can run operators</td>
+</tr>
+<tr>
+<td><strong>RBAC customization</strong></td>
+<td>❌ Limited</td>
+<td>✅ Full cluster-admin within vCluster</td>
+</tr>
+<tr>
+<td><strong>Custom networking</strong></td>
+<td>❌ Limited</td>
+<td>✅ Custom CNI within vCluster</td>
+</tr>
+<tr>
+<td><strong>Isolation from host</strong></td>
+<td>❌ Namespace only</td>
+<td>✅ Full API isolation</td>
+</tr>
+<tr>
+<td><strong>Overhead</strong></td>
+<td>None</td>
+<td>~50-200MB RAM for k3s control plane</td>
+</tr>
+</tbody>
+</table>
+<h3 id="best-for_1">Best For</h3>
+<ul>
+<li>Teams that need to install their own operators/CRDs</li>
+<li>KubeFlow pipeline customization</li>
+<li>Multi-team organizations where each team wants their own K8s environment</li>
+<li>Test/staging environments mirroring production</li>
+<li>Tenants with K8s expertise who need full cluster control</li>
+</ul>
+<hr />
+<h2 id="4-type-3-dedicated-node-allocation-full-gpu-pass-through">4. Type 3 — Dedicated Node Allocation (Full GPU Pass-Through)</h2>
+<h3 id="what-is-it_2">What Is It?</h3>
+<p>The tenant receives <strong>exclusive access to full physical bare metal nodes</strong> on the shared physical cluster — utilizing the <code>7g.80gb</code> full un-sliced GPUs from Pool 1. The tenant uses the shared Kubernetes control plane, but their workloads are isolated onto dedicated physical machines using Kubernetes Taints, Tolerations, and dedicated KAI Scheduler queues.</p>
+<p><strong>"You get this"</strong> — as your boss said, pointing at a diagram of physical server racks, but without the overhead of managing a separate control plane.</p>
+<h3 id="how-it-works_1">How It Works</h3>
+<pre><code>Tenant Request: &quot;I need 2 × H100 nodes dedicated to my team&quot;
+    ↓
+Rafay creates Namespace + RBAC on the main cluster
+    ↓
+KAI Queue created with guaranteed 16x 7g.80gb GPU quota
+    ↓
+Node Taints applied to 2x Physical Servers (e.g., node-01, node-02)
+    ↓
+Tenant workloads are scheduled exclusively on those nodes
+</code></pre>
+<p>The tenant gets namespace-scoped access but enjoys the performance of dedicated hardware. The infrastructure team maintains a single "pane of glass" for the entire 64-GPU cluster.</p>
+<h3 id="what-the-tenant-gets">What the Tenant Gets</h3>
+<ul>
+<li><strong>Up to 2 physical GPU servers</strong> (from Pool 1)</li>
+<li><strong>16 GPUs</strong> (2 × 8 H100 80GB) completely dedicated — no sharing (full <code>7g.80gb</code> profile)</li>
+<li><strong>Dedicated InfiniBand fabric</strong> — no bandwidth contention on those nodes</li>
+<li><strong>Dedicated NVMe scratch storage</strong></li>
+<li><strong>Namespace-admin K8s access</strong></li>
+</ul>
+<h3 id="hardware-isolation-benefits">Hardware Isolation Benefits</h3>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Benefit of Dedicated Node Allocation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GPU</strong></td>
+<td>Zero contention, maximum VRAM and compute via full <code>7g.80gb</code> slices</td>
+</tr>
+<tr>
+<td><strong>Network</strong></td>
+<td>Dedicated InfiniBand bandwidth (400 Gb/s per GPU)</td>
+</tr>
+<tr>
+<td><strong>CPU</strong></td>
+<td>No noisy neighbor, NUMA topology fully available</td>
+</tr>
+<tr>
+<td><strong>Memory</strong></td>
+<td>Full DRAM capacity (e.g., 1.5TB per node)</td>
+</tr>
+<tr>
+<td><strong>Storage I/O</strong></td>
+<td>Dedicated local NVMe IOPS for training datasets</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-you-need-dedicated-nodes">When You Need Dedicated Nodes</h3>
+<ul>
+<li><strong>Large model training</strong> (70B+ parameter models) — needs full InfiniBand bandwidth</li>
+<li><strong>Strict performance SLAs</strong> — production AI systems needing guaranteed latency</li>
+<li><strong>Long-running jobs</strong> — multi-week training runs where interruption is catastrophic</li>
+</ul>
+<h3 id="best-for_2">Best For</h3>
+<ul>
+<li>Enterprise clients with critical production workloads</li>
+<li>Large-scale LLM training (70B, 175B, 400B+ parameter models)</li>
+<li>Research organizations running months-long experiments</li>
+</ul>
+<hr />
+<h2 id="5-comparison-matrix-all-3-types">5. Comparison Matrix — All 3 Types</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Shared Cluster</th>
+<th>vCluster</th>
+<th>Dedicated Node</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Provisioning time</strong></td>
+<td>Minutes</td>
+<td>Minutes</td>
+<td>Minutes</td>
+</tr>
+<tr>
+<td><strong>GPU isolation</strong></td>
+<td>Namespace quota</td>
+<td>vCluster quota</td>
+<td>Physical (Node Taints)</td>
+</tr>
+<tr>
+<td><strong>Network isolation</strong></td>
+<td>NetworkPolicy</td>
+<td>vCluster + NetworkPolicy</td>
+<td>NetworkPolicy</td>
+</tr>
+<tr>
+<td><strong>K8s control</strong></td>
+<td>Namespace admin</td>
+<td>Cluster-admin (virtual)</td>
+<td>Namespace admin</td>
+</tr>
+<tr>
+<td><strong>Install own CRDs</strong></td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Variable</td>
+<td>Good</td>
+<td>Maximum</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Lowest</td>
+<td>Medium</td>
+<td>Highest</td>
+</tr>
+<tr>
+<td><strong>Use case</strong></td>
+<td>Dev/explore</td>
+<td>Team isolation</td>
+<td>Production/large-scale</td>
+</tr>
+<tr>
+<td><strong>Noisy neighbor</strong></td>
+<td>Risk</td>
+<td>Mitigated</td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Customization</strong></td>
+<td>Limited</td>
+<td>High</td>
+<td>Limited</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-tenant-onboarding-flow-all-3-types">6. Tenant Onboarding Flow (All 3 Types)</h2>
+<h3 id="shared-cluster-onboarding">Shared Cluster Onboarding</h3>
+<pre><code>
+1. Tenant submits request via SSP (portal)
+2. Rafay creates Namespace + RBAC
+3. KAI Queue created with GPU quota
+4. ResourceQuota applied
+5. StorageClass PVC quota applied
+6. Tenant gets kubeconfig (namespace-scoped)
+7. Total time: &lt; 5 minutes
+</code></pre>
+<h3 id="vcluster-onboarding">vCluster Onboarding</h3>
+<pre><code>
+1. Tenant submits vCluster request via SSP
+2. Rafay provisions vCluster (k3s API + syncer)
+3. Blueprint applied: KubeFlow, KAI, Monitoring pre-installed
+4. VRL resource limits configured
+5. Tenant gets kubeconfig (cluster-admin of vCluster)
+6. Total time: 5-15 minutes
+</code></pre>
+<h3 id="dedicated-node-onboarding">Dedicated Node Onboarding</h3>
+<pre><code>
+1. Tenant requests dedicated nodes via SSP or account manager
+2. Rafay provisions Namespace + RBAC
+3. KAI Queue created for full `7g.80gb` instances
+4. Target node(s) from Pool 1 are cordoned/tainted for this tenant
+5. Storage allocated from hot/cold/block pools
+6. Tenant gets kubeconfig (namespace-scoped) + documentation
+7. Total time: &lt; 5 minutes
+</code></pre>
+<hr />
+<h2 id="7-standard-architecture-recommendation">7. Standard Architecture Recommendation</h2>
+<pre><code>Tenant Tiers:
+├── Tier 1: Shared Pool (80% of tenants)
+│   ├── Max GPU per tenant: 4 GPUs (or 16 MIG slices)
+│   ├── Namespace isolation + NetworkPolicy
+│   └── KAI Queue: guaranteed 2 GPUs, max burst 8
+│
+├── Tier 2: vCluster (15% of tenants)
+│   ├── Max GPU per vCluster: 16 GPUs
+│   ├── Pre-installed: KubeFlow, MLflow, monitoring
+│   ├── Full CRD/operator freedom
+│   └── VRL enforced GPU + storage quotas
+│
+└── Tier 3: Dedicated Node (5% of tenants)
+    ├── Dedicated nodes: 1 to 2 × H100 nodes (8 to 16 GPUs) from Pool 1
+    ├── Full un-sliced `7g.80gb` GPUs via K8s Taints
+    ├── Dedicated InfiniBand ports per node
+    └── SLA: 99.9% uptime
+</code></pre>
+<hr />
+<h2 id="final-architecture-decisions">Final Architecture Decisions</h2>
+<h3 id="1-tenant-tier-standardization">1. Tenant Tier Standardization</h3>
+<p><strong>Decision:</strong> Adopted the <strong>3-Tier Model</strong>: </p>
+<ul>
+<li><strong>Tier 1: Shared Cluster</strong> (Namespace isolation, MIG slices) - For ~80% of tenants.</li>
+<li><strong>Tier 2: vCluster</strong> (Virtual API isolation, medium burst capacity) - For ~15% of tenants.</li>
+<li><strong>Tier 3: Dedicated Node</strong> (Physical isolation via K8s Taints, dedicated H100 nodes from Pool 1) - For ~5% of tenants.</li>
+</ul>
+<h3 id="2-resource-caps-per-tier">2. Resource Caps per Tier</h3>
+<p><strong>Decision:</strong> </p>
+<ul>
+<li><strong>Shared Tenants (Tier 1):</strong> Capped at a maximum of 4 MIG slices and 500GB storage (base quota).</li>
+<li><strong>vCluster Tenants (Tier 2):</strong> Capped at 16 GPUs and 2TB storage (base quota).</li>
+<li><strong>Dedicated Node (Tier 3):</strong> Allocated in increments of full nodes (e.g., up to 2x H100 nodes = 16 GPUs) from Pool 1.</li>
+</ul>
+<h3 id="3-storage-allocation-strategy">3. Storage Allocation Strategy</h3>
+<p><strong>Decision:</strong> Base quotas are set conservatively (500 GB / 2 TB). However, the massive <strong>1 PB</strong> cluster capacity allows for dynamic expansion of these quotas upon request. The vast majority of the 1 PB is intentionally reserved for central, platform-managed Foundation Models, shared datasets, and vector databases that all tenants can access without duplicating storage.</p>
+<h3 id="4-vrl-virtual-resource-layer-definition">4. VRL (Virtual Resource Layer) Definition</h3>
+<p><strong>Decision:</strong> The VRL is implemented by configuring the <strong>vCluster syncer</strong> to translate tenant requests into physical ResourceQuotas on the host namespace, which are then connected to a specific KAI Scheduler queue for that vCluster.</p>
+<h3 id="4-tenant-queue-configuration-resource-allocation">4. Tenant Queue Configuration (Resource Allocation)</h3>
+<p><strong>Decision:</strong> KAI Scheduler queue policies are defined as follows:</p>
+<ul>
+<li><strong>Tier 1 (Shared):</strong> Guaranteed 2 GPUs (MIG slices) with the ability to burst up to 4 if the cluster is under-utilized.</li>
+<li><strong>Tier 2 (vCluster):</strong> Guaranteed 8 GPUs with the ability to burst up to 16.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "navigation.top", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+      
+        <script src="../assets/javascripts/mermaid-zoom.js"></script>
+      
+    
+  </body>
+</html>

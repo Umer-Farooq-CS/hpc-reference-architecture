@@ -1,0 +1,1741 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Reference Architecture for MAK Technology">
+      
+      
+      
+      
+        <link rel="prev" href="../17_tenant_models/">
+      
+      
+        <link rel="next" href="../14_hardware_diagram/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>18. Service Layer - HPC / GPU Cloud Platform Architecture</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#18_service_layermd-service-layer-deep-dive" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="HPC / GPU Cloud Platform Architecture" class="md-header__button md-logo" aria-label="HPC / GPU Cloud Platform Architecture" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HPC / GPU Cloud Platform Architecture
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              18. Service Layer
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../01_rfp_requirements/" class="md-tabs__link">
+          
+  
+  
+  Introduction
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../03_compute_servers/" class="md-tabs__link">
+          
+  
+  
+  Architecture Detail
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../17_tenant_models/" class="md-tabs__link">
+          
+  
+  
+  Tenant Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../14_hardware_diagram/" class="md-tabs__link">
+          
+  
+  
+  Full Diagrams
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="HPC / GPU Cloud Platform Architecture" class="md-nav__button md-logo" aria-label="HPC / GPU Cloud Platform Architecture" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    HPC / GPU Cloud Platform Architecture
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_rfp_requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. RFP Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Executive Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Detail
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture Detail
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_compute_servers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Compute Servers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_nic_interfaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. NIC Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_network_switching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Network Switching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_network_software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Network Software
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_mig_gpu_slicing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. MIG GPU Slicing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08_storage_tiers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Storage Tiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09_bare_metal_provisioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Bare Metal Provisioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_control_plane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Control Plane
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11_kubernetes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12_kubeflow_kai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. KubeFlow & KAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13_rafay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Rafay Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tenant Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tenant Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17_tenant_models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Tenant Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Service Layer
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Service Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-service-layer-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Service Layer Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-jnaas-jupyter-notebook-as-a-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. JNaaS — Jupyter Notebook as a Service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-modelaas-model-as-a-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ModelaaS — Model as a Service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-mlops-machine-learning-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. MLOps — Machine Learning Operations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-gpu-paas-gpu-platform-as-a-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. GPU PaaS — GPU Platform as a Service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-ssp-self-service-portal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. SSP — Self-Service Portal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-full-service-layer-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Full Service Layer Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-standard-recommendation-service-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Standard Recommendation — Service Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-architecture-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final Architecture Decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Full Diagrams
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Full Diagrams
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14_hardware_diagram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Hardware Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15_software_diagram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Software Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16_control_flow_diagram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Control Flow Diagram
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="18_service_layermd-service-layer-deep-dive">18_service_layer.md - Service Layer (Deep Dive)</h1>
+<blockquote>
+<p>Covers: JNaaS, ModelaaS, MLOps, GPU PaaS — what each service is, how it works, the tools behind it, and alternatives.</p>
+</blockquote>
+<hr />
+<h2 id="1-service-layer-overview">1. Service Layer Overview</h2>
+<p>The service layer is what <strong>tenants directly interact with</strong>. It abstracts all the complexity of K8s, GPU Operator, networking, and storage. Tenants don't care about Pods or MIG — they care about:</p>
+<ul>
+<li>"I want a Jupyter notebook with 2 GPUs"</li>
+<li>"I want to serve my LLM as an API"</li>
+<li>"I want to run an ML training pipeline"</li>
+</ul>
+<pre><code>Tenant Facing Interface (SSP Portal / API)
+     ↓
+┌─────────────────────────────────────────────────┐
+│  SERVICE LAYER                                  │
+│  JNaaS  │  ModelaaS  │  MLOps  │  GPU PaaS     │
+└─────────────────────────────────────────────────┘
+     ↓                (powered by)
+KubeFlow + KServe + KAI Scheduler + GPU Operator
+     ↓
+K8s on Bare Metal GPU Infrastructure
+</code></pre>
+<hr />
+<h2 id="2-jnaas-jupyter-notebook-as-a-service">2. JNaaS — Jupyter Notebook as a Service</h2>
+<h3 id="what-is-it">What Is It?</h3>
+<p>A managed, GPU-accelerated Jupyter Notebook environment where each user gets their own isolated notebook server.</p>
+<p><strong>Direct analogy:</strong> Google Colab or Kaggle Notebooks, but on YOUR hardware, with YOUR GPU allocation, in YOUR isolated environment.</p>
+<h3 id="technology-stack">Technology Stack</h3>
+<pre><code>User opens browser → SSP Portal
+    ↓ requests notebook (selects GPU: 1 × H100 MIG 1g.10gb, image: pytorch:24.01)
+Rafay SSP API → creates KubeFlow Notebook CRD
+    ↓
+KubeFlow Notebook Controller → creates StatefulSet (1 Pod)
+    ↓
+KAI Scheduler → assigns GPU (1g.10gb MIG slice on node-03)
+    ↓
+Pod starts: JupyterLab UI accessible at https://nb.platform.com/user/alice
+    ↓
+User works in notebook → PVC stores workspace persistently
+</code></pre>
+<h3 id="under-the-hood-kubeflow-notebook-crd">Under the Hood — KubeFlow Notebook CRD</h3>
+<pre><code class="language-yaml">apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  name: alice-notebook
+  namespace: tenant-alice
+spec:
+  template:
+    spec:
+      containers:
+
+      - name: notebook
+        image: nvcr.io/nvidia/pytorch:24.01-py3
+        resources:
+          limits:
+            nvidia.com/mig-1g.10gb: 1    # 1 MIG slice
+            memory: &quot;16Gi&quot;
+            cpu: &quot;4&quot;
+        volumeMounts:
+
+        - name: workspace
+          mountPath: /home/jovyan/work
+      volumes:
+
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: alice-workspace-pvc   # 200GB NVMe PVC
+</code></pre>
+<h3 id="notebook-images-environments">Notebook Images (Environments)</h3>
+<p>Tenants select from pre-built images:
+| Image | Contains | Use Case |
+|---|---|---|
+| <code>pytorch:24.01-py3</code> | PyTorch, CUDA 12.3, Python 3.11 | ML training |
+| <code>tensorflow:24.01-tf2</code> | TensorFlow 2.15, CUDA 12.3 | TF-based work |
+| <code>rapids:24.01-cuda12</code> | NVIDIA RAPIDS (GPU-accelerated pandas/sklearn) | Data science |
+| <code>nvcr.io/nim/...</code> | NIM containers for inference | LLM serving |
+| Custom images | Build your own | Specialized needs |</p>
+<h3 id="jupyterhub-vs-kubeflow-notebooks">JupyterHub vs KubeFlow Notebooks</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>JupyterHub</th>
+<th>KubeFlow Notebooks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>K8s native</strong></td>
+<td>✅ (via KubeSpawner)</td>
+<td>✅ Native CRD</td>
+</tr>
+<tr>
+<td><strong>Resource management</strong></td>
+<td>Via K8s quotas</td>
+<td>Via K8s quotas + KAI</td>
+</tr>
+<tr>
+<td><strong>GPU support</strong></td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>MLflow integration</strong></td>
+<td>Manual</td>
+<td>Built-in (KubeFlow)</td>
+</tr>
+<tr>
+<td><strong>KFP Pipelines access</strong></td>
+<td>Manual</td>
+<td>Native</td>
+</tr>
+<tr>
+<td><strong>Complexity</strong></td>
+<td>Lower</td>
+<td>Higher</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Your architecture uses KubeFlow Notebooks</strong> — better integration with the rest of the KubeFlow ecosystem (Pipelines, Training Operator, Katib).</p>
+<hr />
+<h2 id="3-modelaas-model-as-a-service">3. ModelaaS — Model as a Service</h2>
+<h3 id="what-is-it_1">What Is It?</h3>
+<p>An API service where tenants can deploy their trained models (or use pre-packaged models) and expose them as HTTP/gRPC endpoints. Clients call the endpoint to get predictions/generations.</p>
+<p><strong>Analogy:</strong> OpenAI API, but on your own infrastructure. You send a request, the LLM processes it, you get a response.</p>
+<h3 id="use-cases">Use Cases</h3>
+<ul>
+<li><strong>LLM inference API</strong> — tenants deploy a fine-tuned LLaMA/Mistral model and expose an OpenAI-compatible API</li>
+<li><strong>Batch inference</strong> — process thousands of documents asynchronously</li>
+<li><strong>Embedding service</strong> — generate vector embeddings for RAG pipelines</li>
+<li><strong>Custom model serving</strong> — sklearn, XGBoost, ONNX models via REST API</li>
+</ul>
+<h3 id="technology-stack-kserve">Technology Stack — KServe</h3>
+<p><strong>KServe</strong> (formerly KFServing) is the primary model serving framework in your stack.</p>
+<pre><code>Tenant uploads model → MinIO (model registry)
+    ↓ defines InferenceService CRD
+KServe controller → creates serving infrastructure
+    ↓
+Predictor Pod: vLLM / Triton / sklearn runtime
+    ↓ autoscales based on request rate
+Istio Gateway → routes external traffic
+    ↓
+Users/apps call: POST https://api.platform.com/v1/chat/completions
+</code></pre>
+<h3 id="kserve-inferenceservice-example">KServe InferenceService Example</h3>
+<pre><code class="language-yaml">apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: llama-3-70b
+  namespace: tenant-productionai
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: vllm
+      storageUri: s3://models/llama-3-70b-instruct
+      resources:
+        limits:
+          nvidia.com/gpu: 4          # 4 GPUs for this model
+          memory: &quot;320Gi&quot;
+    minReplicas: 1
+    maxReplicas: 4                   # auto-scale up to 4 replicas
+    scaleTarget: 50                  # scale when avg queue &gt; 50 requests
+</code></pre>
+<h3 id="inference-engines-vllm-vs-triton-vs-nim">Inference Engines — vLLM vs Triton vs NIM</h3>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Best For</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>vLLM</strong></td>
+<td>LLMs (generative AI)</td>
+<td>PagedAttention, continuous batching, OpenAI API compatible, very fast</td>
+</tr>
+<tr>
+<td><strong>NVIDIA Triton</strong></td>
+<td>All model types (CV, NLP, ML)</td>
+<td>Multi-framework, dynamic batching, gRPC + REST</td>
+</tr>
+<tr>
+<td><strong>NIM</strong></td>
+<td>NVIDIA-certified LLMs</td>
+<td>Pre-optimized containers, TRT-LLM backend</td>
+</tr>
+<tr>
+<td><strong>TGI (HuggingFace)</strong></td>
+<td>LLMs</td>
+<td>Good alternative to vLLM</td>
+</tr>
+<tr>
+<td><strong>TorchServe</strong></td>
+<td>PyTorch models</td>
+<td>Simple, not LLM-optimized</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Standard choice for LLM inference:</strong> <strong>vLLM</strong> — it's the fastest open-source LLM serving framework.</p>
+<h3 id="vllm-key-features">vLLM Key Features</h3>
+<ul>
+<li><strong>PagedAttention:</strong> Novel GPU memory management — KV cache paged like OS virtual memory → 20x more requests served vs naive implementation</li>
+<li><strong>Continuous batching:</strong> Dynamically adds new requests to in-progress batches → maximizes GPU utilization</li>
+<li><strong>OpenAI compatible:</strong> Same API format as OpenAI → drop-in replacement for clients</li>
+<li><strong>Multi-GPU:</strong> Tensor parallelism across multiple GPUs for large models</li>
+<li><strong>AWQ/GPTQ quantization:</strong> Serve large models with less VRAM</li>
+</ul>
+<hr />
+<h2 id="4-mlops-machine-learning-operations">4. MLOps — Machine Learning Operations</h2>
+<h3 id="what-is-mlops">What Is MLOps?</h3>
+<p><strong>MLOps</strong> is the practice of applying DevOps principles to machine learning — automating the full ML lifecycle from data to deployed model.</p>
+<p><strong>Components of MLOps:</strong></p>
+<pre><code>Data Management → Training → Experiment Tracking → Model Registry → Deployment → Monitoring
+</code></pre>
+<h3 id="mlops-tools-in-your-stack">MLOps Tools in Your Stack</h3>
+<h4 id="mlflow-experiment-tracking-model-registry">MLflow — Experiment Tracking + Model Registry</h4>
+<p><strong>The most widely adopted open-source MLOps tool.</strong></p>
+<pre><code>Training job runs:
+
+    - Logs metrics (loss, accuracy) → MLflow Tracking Server
+    - Logs parameters (learning_rate, batch_size) → MLflow
+    - Logs model artifacts → MinIO (via MLflow artifact store)
+    - Registers model version → MLflow Model Registry
+    ↓
+Best model promoted: &quot;Staging&quot; → &quot;Production&quot;
+    ↓
+KServe deploys from model registry: storageUri: s3://mlflow-artifacts/models/llama-v2/3
+</code></pre>
+<p><strong>MLflow components:</strong>
+| Component | Purpose |
+|---|---|
+| <strong>Tracking Server</strong> | Logs metrics, parameters, tags, artifacts per run |
+| <strong>Model Registry</strong> | Versions models, tracks stage (Staging/Production) |
+| <strong>Projects</strong> | Reproducible ML code packages |
+| <strong>Models</strong> | Standardized model format for deployment |</p>
+<h4 id="kubeflow-pipelines-workflow-automation">KubeFlow Pipelines — Workflow Automation</h4>
+<p>End-to-end ML pipeline automation:</p>
+<pre><code>Pipeline: 
+  Data collection → Data cleaning → Feature engineering 
+  → Training (PyTorchJob) → Evaluation → Registration (MLflow) 
+  → Deployment (KServe) → A/B test → Promote
+</code></pre>
+<p>Each step is a container. Steps are versioned, cached, and re-run only when inputs change.</p>
+<h4 id="dvc-data-version-control">DVC — Data Version Control</h4>
+<ul>
+<li>Git-like versioning for large datasets</li>
+<li>Works with MinIO/S3 for actual data storage</li>
+<li>Tracks data lineage: which dataset version produced which model?</li>
+</ul>
+<h4 id="prometheus-grafana-ml-monitoring">Prometheus + Grafana — ML Monitoring</h4>
+<p>Monitor production models:</p>
+<ul>
+<li>Request latency and throughput</li>
+<li>GPU utilization during inference</li>
+<li>Model prediction drift (via custom metrics)</li>
+<li>DCGM metrics (GPU health)</li>
+</ul>
+<hr />
+<h2 id="5-gpu-paas-gpu-platform-as-a-service">5. GPU PaaS — GPU Platform as a Service</h2>
+<h3 id="what-is-it_2">What Is It?</h3>
+<p><strong>GPU PaaS</strong> is the most basic offering — tenants get raw GPU compute access via the K8s API. No pre-installed ML tools, just bare GPU resources. Power users who want to bring their own stack.</p>
+<h3 id="how-it-works">How It Works</h3>
+<pre><code>Tenant gets:
+
+- Namespace with GPU quota (e.g., 8 GPUs)
+- kubeconfig (namespace-scoped)
+- StorageClass for PVCs
+- Direct GPU access (nvidia.com/gpu resource)
+</code></pre>
+<p>Tenant brings their own:</p>
+<ul>
+<li>Container images</li>
+<li>Workload definitions (Jobs, Deployments)</li>
+<li>ML framework, inference server, etc.</li>
+</ul>
+<h3 id="use-cases_1">Use Cases</h3>
+<ul>
+<li>Custom research frameworks not in the standard stack</li>
+<li>Legacy HPC workloads containerized</li>
+<li>Niche ML frameworks (Julia-based, custom CUDA)</li>
+<li>Container-based HPC (MPI jobs via MPIJob CRD)</li>
+</ul>
+<hr />
+<h2 id="6-ssp-self-service-portal">6. SSP — Self-Service Portal</h2>
+<h3 id="what-is-the-ssp">What Is the SSP?</h3>
+<p>The <strong>Self-Service Portal</strong> is the web UI that tenants use to access all services. It abstracts the K8s complexity into simple forms and dashboards.</p>
+<p><strong>Capabilities:</strong></p>
+<pre><code>Dashboard:
+├── My Resources (GPU usage, storage usage)
+├── My Notebooks (start/stop/resize Jupyter)
+├── My Models (deployed inference services)
+├── My Jobs (training pipeline status)
+├── My vCluster (access to vCluster kubeconfig)
+└── Billing / Quota (usage tracking)
+</code></pre>
+<p><strong>Technology options for SSP:</strong>
+| Option | Notes |
+|---|---|
+| <strong>Rafay SSP (built-in)</strong> | Native Rafay self-service, deepest integration |
+| <strong>KubeFlow Central Dashboard</strong> | KubeFlow's own UI for notebooks, pipelines |
+| <strong>Custom portal (React + Rafay API)</strong> | Full customization, brand it yourself |
+| <strong>Backstage (Spotify)</strong> | Developer portal framework, highly customizable |</p>
+<p><strong>Standard recommendation:</strong> Use <strong>KubeFlow's central dashboard</strong> for ML-specific functions + <strong>Rafay's SSP</strong> for cluster/vCluster provisioning. Optionally wrap both with a custom-branded portal via APIs.</p>
+<hr />
+<h2 id="7-full-service-layer-architecture">7. Full Service Layer Architecture</h2>
+<pre><code>TENANT (browser / CLI / API)
+    ↓
+SSP Portal (Rafay + KubeFlow Dashboard)
+    ↓
+┌──────────────────────────────────────────────────────────┐
+│  JNaaS              ModelaaS         MLOps       GPU PaaS │
+│  KubeFlow           KServe +         MLflow +    Raw K8s  │
+│  Notebooks          vLLM/NIM         KFP         + GPU    │
+└──────────────────────────────────────────────────────────┘
+    ↓
+KAI Scheduler (GPU-aware, queue-based)
+    ↓
+NVIDIA GPU Operator (driver, device plugin, MIG)
+    ↓
+Bare Metal GPU Nodes (H100 × N)
+</code></pre>
+<hr />
+<h2 id="8-standard-recommendation-service-layer">8. Standard Recommendation — Service Layer</h2>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Tool</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>JNaaS</strong></td>
+<td>KubeFlow Notebooks + JupyterLab</td>
+<td>K8s-native, KFP integration, GPU-aware</td>
+</tr>
+<tr>
+<td><strong>ModelaaS</strong></td>
+<td>KServe + vLLM</td>
+<td>Best LLM inference, auto-scaling, OpenAI-compatible</td>
+</tr>
+<tr>
+<td><strong>MLOps</strong></td>
+<td>KubeFlow Pipelines + MLflow + DVC</td>
+<td>Full lifecycle, open source, vendor-neutral</td>
+</tr>
+<tr>
+<td><strong>Experiment Tracking</strong></td>
+<td>MLflow</td>
+<td>Most widely adopted, easy, integrates everywhere</td>
+</tr>
+<tr>
+<td><strong>Model Registry</strong></td>
+<td>MLflow Registry + MinIO</td>
+<td>Simple, reliable, S3-backed</td>
+</tr>
+<tr>
+<td><strong>GPU PaaS</strong></td>
+<td>Native K8s + KAI Queues</td>
+<td>Raw access for power users</td>
+</tr>
+<tr>
+<td><strong>SSP</strong></td>
+<td>Rafay SSP + KubeFlow Dashboard</td>
+<td>Best integration with your full stack</td>
+</tr>
+<tr>
+<td><strong>Monitoring</strong></td>
+<td>Prometheus + Grafana + DCGM</td>
+<td>GPU metrics + application metrics unified</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="final-architecture-decisions">Final Architecture Decisions</h2>
+<h3 id="1-jnaas-jupyter-notebook-as-a-service-engine">1. JNaaS (Jupyter Notebook as a Service) Engine</h3>
+<p><strong>Decision:</strong> Adopted <strong>KubeFlow Notebooks</strong> as the JNaaS backend. This leverages native Kubernetes CRDs and integrates cleanly with the KAI Scheduler for GPU allocation.</p>
+<h3 id="2-modelaas-inference-engine">2. ModelaaS Inference Engine</h3>
+<p><strong>Decision:</strong> Adopted <strong>vLLM</strong> as the default inference backend integrated with KServe. It provides the fastest open-source performance, PagedAttention, and an OpenAI-compatible API.</p>
+<h3 id="3-mlops-registry">3. MLOps Registry</h3>
+<p><strong>Decision:</strong> Adopted <strong>MLflow</strong> for experiment tracking and model versioning, using the MinIO (Cold Storage) tier as the artifact backend.</p>
+<h3 id="4-tenant-frontend-ssp">4. Tenant Frontend (SSP)</h3>
+<p><strong>Decision:</strong> We will use the built-in <strong>KubeFlow Central Dashboard</strong> for ML-specific functions combined with <strong>Rafay\'s SSP</strong> for cluster/vCluster provisioning. This provides the best integration without requiring custom development upfront.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "navigation.top", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+      
+        <script src="../assets/javascripts/mermaid-zoom.js"></script>
+      
+    
+  </body>
+</html>

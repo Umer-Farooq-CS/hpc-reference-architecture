@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant Admin as Platform Admin
+    participant Rafay as Rafay Controller (SaaS)
+    participant Argo as ArgoCD (GitOps)
+    participant CP as K8s Control Plane
+    participant KAI as KAI Scheduler
+    participant Cilium as Cilium CNI
+
+    Admin->>Rafay: Create Project & Assign Quotas (e.g., 4 GPUs)
+    Rafay->>Argo: Push vCluster Blueprint to Git Repo
+    Argo->>CP: Deploy vCluster Pods & Namespaces
+    CP-->>Argo: vCluster Ready
+    Argo->>Cilium: Apply strict NetworkPolicies (Isolate Tenant)
+    Argo->>KAI: Register Tenant GPU Quota & Storage Limits
+    Rafay->>Admin: Provisioning Complete
+    Admin->>Tenant: Distribute vCluster kubeconfig
+    Note over Tenant, Cilium: Tenant is now completely isolated and quota-bound
